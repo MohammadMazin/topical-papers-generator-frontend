@@ -1,0 +1,46 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.btn-primary, .btn-primary:hover, .btn-primary:active{
+  border:none!important;
+}
+
+.questionUnselected:hover{
+  background-color: rgb(240, 252, 255);
+}
+
+.questionSelected{
+  background-color: rgb(68, 224, 206);
+}
+.questionSelected:hover{
+  background-color: rgb(30, 124, 147);
+}
+
+.btn-primary  {
+  background-color: #02b8c5 !important;
+}
+.btn-primary:hover{
+  background-color: #0084a8 !important;
+}
+.btn-primary:active {
+  background-color: #014a7a !important;
+}
+
+.navgradient{
+  background: rgb(3,105,100);
+background: -moz-linear-gradient(10deg, rgba(3,105,100,1) 0%, rgba(33,52,52,1) 56%);
+background: -webkit-linear-gradient(10deg, rgba(3,105,100,1) 0%, rgba(33,52,52,1) 56%);
+background: linear-gradient(10deg, rgba(3,105,100,1) 0%, rgba(33,52,52,1) 56%);
+filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#036964",endColorstr="#213434",GradientType=1);
+}
