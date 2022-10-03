@@ -149,6 +149,17 @@ const Dashboard = () => {
     }
 
     const handleCloseModal = () => setShow(false)
+    const clearSelectedQuestions = () => {
+        setSelectedQuestions([])
+        setQuestions(prevQuestions => {
+            const data = prevQuestions.map(question => {
+                if (question.selected)
+                    question.selected = false
+                return question
+            })
+            return data
+        })
+    }
 
     return (
         <>
@@ -236,7 +247,6 @@ const Dashboard = () => {
                                     :
                                     <>
                                         <Container className='d-flex flex-row-reverse gap-3 flex-end p-0'>
-                                            <Button onClick={() => console.log(selectedQuestions)} disabled={selectedQuestions.length === 0}>Generate PDF</Button>
                                             <Button onClick={() => setShow(true)} disabled={selectedQuestions.length === 0}>View PDF {selectedQuestions.length > 0 && `(${selectedQuestions.length} Questions)`}</Button>
                                         </Container>
 
@@ -288,7 +298,11 @@ const Dashboard = () => {
                 </Container>
             </Container>
 
-            {show && <ViewPDFModal show={show} handleClose={handleCloseModal} selectedQuestions={selectedQuestions} />}
+            {show && <ViewPDFModal
+                show={show}
+                handleClose={handleCloseModal}
+                selectedQuestions={selectedQuestions}
+                clearSelectedQuestions={clearSelectedQuestions} />}
 
             {/* <Container className="d-flex justify-content-center">
 

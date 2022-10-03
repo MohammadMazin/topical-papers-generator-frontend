@@ -23,6 +23,11 @@ export const addUser = async(data) => {
     return response.data
 }
 
+export const createAdmin = async(data) => {
+    const response = await axios.post(`${baseUrl}add/admin`, data)
+    return response.data
+}
+
 export const approveUser = async(data) => {
     const response = await axios.post(`${baseUrl}approve`, data)
     return response.data
