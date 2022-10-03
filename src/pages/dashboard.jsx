@@ -15,6 +15,7 @@ import Spinner from '../components/Spinner'
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 import ViewPDFModal from '../modals/ViewPDFModal'
+import { getTopicsOfSubject } from '../services/topics'
 
 const Dashboard = () => {
 
@@ -25,10 +26,12 @@ const Dashboard = () => {
     const [subjects, setSubjects] = useState([])
     const [boards, setBoards] = useState([])
     const [levels, setLevels] = useState([])
+    const [topics, setTopics] = useState([])
 
     const [boardId, setBoardId] = useState(null)
     const [levelId, setLevelId] = useState(null)
     const [subjectId, setSubjectId] = useState(null)
+    const [topicId, setTopicId] = useState(null)
 
     const [filterOn, setFilterOn] = useState(false)
 
@@ -92,6 +95,7 @@ const Dashboard = () => {
             boardId,
             levelId,
             subjectId,
+            topicId,
             filterOn
         }
 
@@ -132,6 +136,16 @@ const Dashboard = () => {
         setSelectedQuestions(prevSelectedQuestions => {
             return prevSelectedQuestions?.filter(question => question._id !== questions[index]._id)
         })
+    }
+
+    const handleSelectSubject = async id => {
+        setSubjectId(id)
+
+        const res = await getTopicsOfSubject({ subjectId: id })
+        if (res.success)
+            setTopics(res.data)
+        else
+            toast.error('Failed to fetch topics of subject')
     }
 
     const handleCloseModal = () => setShow(false)
@@ -180,14 +194,27 @@ const Dashboard = () => {
                                             }
                                         </Form.Select>
                                     </Container>
+                                </Container>
 
-
+                                <Container className='d-flex justify-space-around p-0 gap-5 mt-3'>
                                     <Container className='p-0'>
                                         <Form.Label>Select Subject</Form.Label>
-                                        <Form.Select aria-label="Default select example" onChange={(e) => setSubjectId(e.target.value)}>
+                                        <Form.Select aria-label="Default select example" onChange={(e) => handleSelectSubject(e.target.value)}>
                                             <option value={null}>All Subjects</option>
                                             {subjects.map((subject, index) => {
                                                 const { _id, name } = subject
+                                                return <option key={_id} value={_id}>{name}</option>
+                                            })
+                                            }
+                                        </Form.Select>
+                                    </Container>
+
+                                    <Container className='p-0'>
+                                        <Form.Label>Select Topic</Form.Label>
+                                        <Form.Select aria-label="Default select example" disabled={topics.length === 0} onChange={(e) => setTopicId(e.target.value)}>
+                                            <option value={null}>All Topics</option>
+                                            {topics.map((topic, index) => {
+                                                const { _id, name } = topic
                                                 return <option key={_id} value={_id}>{name}</option>
                                             })
                                             }
@@ -210,7 +237,7 @@ const Dashboard = () => {
                                     <>
                                         <Container className='d-flex flex-row-reverse gap-3 flex-end p-0'>
                                             <Button onClick={() => console.log(selectedQuestions)} disabled={selectedQuestions.length === 0}>Generate PDF</Button>
-                                            <Button onClick={() => setShow(true)} disabled={selectedQuestions.length === 0}>View PDF</Button>
+                                            <Button onClick={() => setShow(true)} disabled={selectedQuestions.length === 0}>View PDF {selectedQuestions.length > 0 && `(${selectedQuestions.length} Questions)`}</Button>
                                         </Container>
 
                                         <Container className='p-0 d-flex'>

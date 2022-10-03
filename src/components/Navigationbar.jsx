@@ -7,6 +7,7 @@ import { useContext, useEffect, useState } from 'react';
 import UserContext from '../globals/user-data';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify'
+import { Link } from 'react-router-dom';
 
 export default function NavigationBar() {
 
@@ -36,11 +37,13 @@ export default function NavigationBar() {
                 <Navbar.Brand href="#home">Topical Papers Generator</Navbar.Brand>
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
 
-                <Navbar.Collapse id="responsive-navbar-nav">
-                    <Nav className="me-auto">
+                <Navbar.Collapse id="responsive-navbar-nav ">
+                    <Nav className="me-auto d-flex justify-content-between w-100 px-4">
+                        <Link style={{ color: 'white', textDecoration: 'none', }} to="/">
+                            <span style={{ color: 'white', textDecoration: 'none', }}>Home</span>
+                        </Link>
                         <p className='mb-auto mt-auto' style={{ color: 'white' }}>Logged in as: {username}</p>
-                        {/* <Nav.Link href="#features">Features</Nav.Link>
-                        <Nav.Link href="#pricing">Pricing</Nav.Link>
+                        {/* <Nav.Link href="#pricing">Pricing</Nav.Link>
                         <NavDropdown title="Dropdown" id="collasible-nav-dropdown">
                             <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
                             <NavDropdown.Item href="#action/3.2">

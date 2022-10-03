@@ -2,12 +2,13 @@ import { useState, useEffect } from 'react'
 import Container from 'react-bootstrap/Container'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
+import Table from 'react-bootstrap/Table'
 import { getAllBoards } from '../services/boards'
 import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
 import { addLevel } from '../services/levels'
 import { getAllSubjectCategorys } from '../services/subjectCategory'
-import { addSubject } from '../services/subjects'
+import { addSubject, getAllSubjects } from '../services/subjects'
 
 
 
@@ -18,6 +19,7 @@ const AddSubject = () => {
     const [categorys, setCategorys] = useState([])
     const [boardId, setBoardId] = useState(null)
     const [subjectCategoryId, setSubjectCategoryId] = useState(null)
+    const [subjects, setSubjects] = useState([])
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -35,7 +37,18 @@ const AddSubject = () => {
                 toast.error("Failed To Load Subject Categorys")
         }
 
+        const fetchSubjects = async () => {
+            const res = await getAllSubjects()
+            if (res.success)
+                setSubjects(res.data)
+            else
+                toast.error("Failed To Load Subjects")
+        }
+
+
+
         fetchData()
+        fetchSubjects()
     }, [])
 
     const handleSubmit = async e => {
@@ -99,6 +112,36 @@ const AddSubject = () => {
                 <Button type="submit" className='mt-5' onClick={handleSubmit}>Add Subject</Button>
 
             </Form>
+
+            <hr />
+
+            <h3>All Subjects</h3>
+            <Container className='bg-white p-0  mt-4'>
+                <Table striped bordered hover>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Board</th>
+                            <th>Subject Category</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {subjects.map((subject, index) => {
+                            const { name, boardId, subjectCategoryId } = subject
+                            return (
+                                <tr>
+                                    <td>{index + 1}</td>
+                                    <td>{name}</td>
+                                    <td>{boardId.name}</td>
+                                    <td>{subjectCategoryId.name}</td>
+                                </tr>
+                            )
+                        })}
+                    </tbody>
+                </Table>
+            </Container>
+
 
         </Container>
     )

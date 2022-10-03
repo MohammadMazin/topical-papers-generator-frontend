@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Container from 'react-bootstrap/Container'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
-import { addBoard } from '../services/boards'
+import Table from 'react-bootstrap/Table';
+import { addBoard, getAllBoards } from '../services/boards'
 import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
 
@@ -12,7 +13,21 @@ const AddBoard = () => {
 
     const [name, setName] = useState('')
     const [location, setLocation] = useState('')
+    const [boards, setBoards] = useState([])
     const navigate = useNavigate()
+
+    useEffect(() => {
+        const fetchData = async () => {
+
+            const res = await getAllBoards()
+            if (res.success) {
+                setBoards(res.data)
+            }
+            else
+                toast.error('Failed to fetch all board details')
+        }
+        fetchData()
+    }, [])
 
     const handleSubmit = async e => {
         e.preventDefault()
@@ -63,6 +78,32 @@ const AddBoard = () => {
                 <Button type="submit">Add Board</Button>
 
             </Form>
+
+            <hr />
+
+            <h3>All Boards</h3>
+            <Container className='bg-white p-0  mt-4'>
+                <Table striped bordered hover>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Location</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {boards.map((board, index) => {
+                            return (
+                                <tr>
+                                    <td>{index + 1}</td>
+                                    <td>{board.name}</td>
+                                    <td>{board.location}</td>
+                                </tr>
+                            )
+                        })}
+                    </tbody>
+                </Table>
+            </Container>
 
         </Container>
     )

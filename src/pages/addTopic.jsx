@@ -3,43 +3,40 @@ import Container from 'react-bootstrap/Container'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Table from 'react-bootstrap/Table';
-import { getAllBoards } from '../services/boards'
 import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
-import { addLevel, getAllLevels } from '../services/levels'
+import { getAllSubjects } from '../services/subjects';
+import { addTopic, getAllTopics } from '../services/topics';
 
 
 
-const AddLevel = () => {
+const AddTopic = () => {
 
     const [name, setName] = useState('')
-    const [description, setDescription] = useState('')
-    const [boards, setBoards] = useState([])
-    const [boardId, setBoardId] = useState(null)
-    const [levels, setLevels] = useState([])
+    const [subjectId, setSubjectId] = useState(null)
+    const [subjects, setSubjects] = useState([])
+    const [topics, setTopics] = useState([])
     const navigate = useNavigate()
 
     useEffect(() => {
         const fetchData = async () => {
-            const res = await getAllBoards()
+            const res = await getAllTopics()
             if (res.success)
-                setBoards(res.data)
+                setTopics(res.data)
             else
                 toast.error("Failed To Load Boards")
         }
 
-        const fetchLevels = async () => {
-            const res = await getAllLevels()
+        const fetchSubjects = async () => {
+            const res = await getAllSubjects()
             if (res.success)
-                setLevels(res.data)
+                setSubjects(res.data)
             else
-                toast.error("Failed To Load Levels")
+                toast.error("Failed To Load Boards")
         }
 
-
-
         fetchData()
-        fetchLevels()
+        fetchSubjects()
     }, [])
 
     const handleSubmit = async e => {
@@ -47,18 +44,17 @@ const AddLevel = () => {
 
         const data = {
             name,
-            description,
-            boardId,
+            subjectId,
             adminId: localStorage.getItem("_id")
         }
 
-        const res = await addLevel(data)
+        const res = await addTopic(data)
         if (res.success) {
-            toast.success(`Level ${name} has been successfully added`)
+            toast.success(`Topic ${name} has been successfully added`)
             navigate('/')
         }
         else {
-            toast.error("Failed to Add Level")
+            toast.error("Failed to Add Topic")
         }
 
     }
@@ -66,12 +62,12 @@ const AddLevel = () => {
 
     return (
         <Container className='my-4'>
-            <h3>Add Level</h3>
+            <h3>Add Topic</h3>
             <hr />
 
             <Form className='w-50' onSubmit={handleSubmit}>
 
-                <Form.Label>Level Name</Form.Label>
+                <Form.Label>Topic Name</Form.Label>
                 <Form.Control
                     type="title"
                     placeholder="Ex: A levels"
@@ -80,49 +76,40 @@ const AddLevel = () => {
                     onChange={(e) => setName(e.target.value)}
                 />
 
-                <Form.Label>Level Description</Form.Label>
-                <Form.Control
-                    type="title"
-                    className="me-2 mb-4"
-                    aria-label="title"
-                    onChange={(e) => setDescription(e.target.value)}
-                />
-
-                <Form.Label>Select Board</Form.Label>
-                <Form.Select aria-label="Default select example" onChange={(e) => setBoardId(e.target.value)}>
-                    <option value="" disabled selected>Select your Board</option>
-                    {boards.map((board, index) => {
-                        const { _id, name } = board
+                <Form.Label>Select Subject</Form.Label>
+                <Form.Select aria-label="Default select example" onChange={(e) => setSubjectId(e.target.value)}>
+                    <option value="" disabled selected>Select your Subject</option>
+                    {subjects.map((subject, index) => {
+                        const { _id, name } = subject
                         return <option key={_id} value={_id}>{name}</option>
                     })
                     }
                 </Form.Select>
 
-                <Button type="submit" className='mt-5' onClick={handleSubmit}>Add Level</Button>
+                <Button type="submit" className='mt-5' onClick={handleSubmit}>Add Topic</Button>
 
             </Form>
 
             <hr />
 
-            <h3>All Levels</h3>
+            <h3>All Topics</h3>
             <Container className='bg-white p-0  mt-4'>
                 <Table striped bordered hover>
                     <thead>
                         <tr>
                             <th>#</th>
                             <th>Name</th>
-                            <th>Description</th>
-                            <th>Board</th>
+                            <th>Subject</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {levels.map((level, index) => {
+                        {topics.map((topic, index) => {
+                            const { name, subjectId } = topic
                             return (
                                 <tr>
                                     <td>{index + 1}</td>
-                                    <td>{level.name}</td>
-                                    <td>{level.description}</td>
-                                    <td>{level.boardId.name}</td>
+                                    <td>{name}</td>
+                                    <td>{subjectId.name}</td>
                                 </tr>
                             )
                         })}
@@ -136,4 +123,4 @@ const AddLevel = () => {
     )
 }
 
-export default AddLevel
+export default AddTopic

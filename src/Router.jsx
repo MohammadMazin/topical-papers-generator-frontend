@@ -8,8 +8,10 @@ import LoginAdmin from './pages/loginAdmin'
 import AddQuestion from './pages/addQuestion'
 import AddBoard from './pages/addBoard'
 import AddLevel from './pages/addLevel'
+import AddQuestionType from './pages/addQuestionType'
 import AddSubjectCategory from './pages/addSubjectCategory'
 import AddSubject from './pages/addSubject'
+import AddTopic from './pages/addTopic'
 import EditQuestion from './pages/editQuestion'
 import DeleteQuestion from './pages/deleteQuestion'
 import VerifyUser from './pages/verifyUser'
@@ -66,6 +68,8 @@ function Router() {
                                 <Route path="/addLevel" element={<AddLevel />} />
                                 <Route path="/addSubjectCategory" element={<AddSubjectCategory />} />
                                 <Route path="/addSubject" element={<AddSubject />} />
+                                <Route path="/addQuestionType" element={<AddQuestionType />} />
+                                <Route path="/addTopic" element={<AddTopic />} />
                                 <Route path="/edit" element={<EditQuestion />} />
                                 <Route path="/delete" element={<DeleteQuestion />} />
                                 <Route path="/verify-user" element={<VerifyUser />} />

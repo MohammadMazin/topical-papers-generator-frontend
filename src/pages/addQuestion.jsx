@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import Button from 'react-bootstrap/Button'
 import Container from 'react-bootstrap/Container'
 import Form from 'react-bootstrap/Form'
@@ -9,11 +9,10 @@ import { getQuestionTypes } from '../services/questionTypes'
 import { getAllLevelsOfBoard } from '../services/levels'
 import { getAllSubjects } from '../services/subjects'
 import CodeEditor from '@uiw/react-textarea-code-editor';
+import { getTopicsOfSubject } from '../services/topics'
+import { useNavigate } from 'react-router-dom'
 
 const AddQuestion = () => {
-
-    const quillRef = useRef()
-    const [value, setValue] = useState('');
 
     const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
@@ -26,12 +25,16 @@ const AddQuestion = () => {
     const [boards, setBoards] = useState([])
     const [subjects, setSubjects] = useState([])
     const [levels, setLevels] = useState([])
+    const [topics, setTopics] = useState([])
 
     const [boardId, setBoardId] = useState(null)
     const [levelId, setLevelId] = useState(null)
     const [subjectId, setSubjectId] = useState(null)
+    const [topicId, setTopicId] = useState(null)
 
     const [loading, setLoading] = useState(false)
+
+    const navigate = useNavigate()
 
     useEffect(() => {
 
@@ -80,12 +83,14 @@ const AddQuestion = () => {
             levelId,
             subjectId,
             questionTypeId,
+            topicId,
             adminId: localStorage.getItem("_id")
         }
 
         const res = await addQuestion(data)
         if (res.success) {
             toast.success('Question added to database!')
+            navigate('/')
         }
         else
             toast.error('Failed to add question to database!')
@@ -102,6 +107,15 @@ const AddQuestion = () => {
             toast.error(res.message)
     }
 
+    const handleSelectSubject = async id => {
+        setSubjectId(id)
+
+        const res = await getTopicsOfSubject({ subjectId: id })
+        if (res.success)
+            setTopics(res.data)
+        else
+            toast.error('Failed to fetch topics of subject')
+    }
 
     return (
         <Container className='py-4'>
@@ -139,6 +153,7 @@ const AddQuestion = () => {
                 className='w-25'
                 onChange={(e) => setQuestionTypeId(e.target.value)}
             >
+                <option value="" disabled selected>Select your Question Type</option>
                 {questionTypes.map((questionType, index) => {
                     const { name, _id } = questionType
                     return (
@@ -148,22 +163,23 @@ const AddQuestion = () => {
                 })}
             </Form.Select>
 
-            <Container className='d-flex justify-space-around p-0 gap-5 mt-3'>
-                <Container className='p-0'>
-                    <Form.Label>Select Board</Form.Label>
-                    <Form.Select aria-label="Default select example" onChange={(e) => handleGetLevelsOfBoard(e.target.value)}>
-                        <option value="" disabled selected>Select your Board</option>
-                        {boards.map((board, index) => {
-                            const { _id, name } = board
-                            return <option key={_id} value={_id}>{name}</option>
-                        })
-                        }
-                    </Form.Select>
-                </Container>
-                {levels.length !== 0 &&
+            <Container className='d-flex flex-column justify-space-around p-0 gap-5 mt-3'>
+                <Container className='p-0 d-flex'>
+                    <Container className='p-0'>
+                        <Form.Label>Select Board</Form.Label>
+                        <Form.Select aria-label="Default select example" onChange={(e) => handleGetLevelsOfBoard(e.target.value)} style={{ width: '80%' }}>
+                            <option value="" disabled selected>Select your Board</option>
+                            {boards.map((board, index) => {
+                                const { _id, name } = board
+                                return <option key={_id} value={_id}>{name}</option>
+                            })
+                            }
+                        </Form.Select>
+                    </Container>
+
                     <Container className='p-0'>
                         <Form.Label>Select Level</Form.Label>
-                        <Form.Select aria-label="Default select example" onChange={(e) => setLevelId(e.target.value)}>
+                        <Form.Select aria-label="Default select example" disabled={levels.length === 0} onChange={(e) => setLevelId(e.target.value)} style={{ width: '80%' }}>
                             <option value="" disabled selected>Select your Level</option>
                             {levels.map((level, index) => {
                                 const { _id, name } = level
@@ -172,19 +188,32 @@ const AddQuestion = () => {
                             }
                         </Form.Select>
                     </Container>
-                }
+                </Container>
 
+                <Container className='p-0 d-flex'>
+                    <Container className='p-0'>
+                        <Form.Label>Select Subject</Form.Label>
+                        <Form.Select aria-label="Default select example" onChange={(e) => handleSelectSubject(e.target.value)} style={{ width: '80%' }}>
+                            <option value="" disabled selected>Select your Subject</option>
+                            {subjects.map((subject, index) => {
+                                const { _id, name } = subject
+                                return <option key={_id} value={_id}>{name}</option>
+                            })
+                            }
+                        </Form.Select>
+                    </Container>
 
-                <Container className='p-0'>
-                    <Form.Label>Select Subject</Form.Label>
-                    <Form.Select aria-label="Default select example" onChange={(e) => setSubjectId(e.target.value)}>
-                        <option value="" disabled selected>Select your Subject</option>
-                        {subjects.map((subject, index) => {
-                            const { _id, name } = subject
-                            return <option key={_id} value={_id}>{name}</option>
-                        })
-                        }
-                    </Form.Select>
+                    <Container className='p-0'>
+                        <Form.Label>Select Topic</Form.Label>
+                        <Form.Select aria-label="Default select example" disabled={topics.length === 0} onChange={(e) => setTopicId(e.target.value)} style={{ width: '80%' }}>
+                            <option value="" disabled selected>Select your Topic</option>
+                            {topics.map((topic, index) => {
+                                const { _id, name } = topic
+                                return <option key={_id} value={_id}>{name}</option>
+                            })
+                            }
+                        </Form.Select>
+                    </Container>
                 </Container>
             </Container>
 
