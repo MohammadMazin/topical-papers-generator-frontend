@@ -96,7 +96,8 @@ const Dashboard = () => {
             levelId,
             subjectId,
             topicId,
-            filterOn
+            filterOn,
+            userId: localStorage.getItem("_id")
         }
 
         const res = await searchQuestions(data)

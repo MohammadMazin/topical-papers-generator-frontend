@@ -9,20 +9,20 @@ const DashboardAdmin = () => {
             <Container className='p-0 my-4 d-flex flex-column  w-50'>
                 <h1>Options</h1>
                 <Container className='py-5 card gap-3 d-flex align-items-center' style={{ flexWrap: 'wrap' }} >
-                    <Link to="/addBoard" className='w-50' ><Button className='py-3 w-100' style={{ fontSize: '24px' }}>Add Board</Button></Link>
-                    <Link to="/addLevel" className='w-50' ><Button className='py-3 w-100' style={{ fontSize: '24px' }}>Add Level</Button></Link>
+                    <Link to="/addBoard" className='w-50' ><Button className='py-3 w-100' style={{ fontSize: '24px' }}>Boards</Button></Link>
+                    <Link to="/addLevel" className='w-50' ><Button className='py-3 w-100' style={{ fontSize: '24px' }}>Levels</Button></Link>
 
                     <hr />
-                    <Link to="/addSubjectCategory" className='w-50' ><Button className='py-3 w-100' style={{ fontSize: '24px' }}>Add Subject Category</Button></Link>
-                    <Link to="/addSubject" className='w-50' ><Button className='py-3 w-100' style={{ fontSize: '24px' }}>Add Subject</Button></Link>
-                    <Link to="/addTopic" className='w-50' ><Button className='py-3 w-100' style={{ fontSize: '24px' }}>Add Topic</Button></Link>
+                    <Link to="/addSubjectCategory" className='w-50' ><Button className='py-3 w-100' style={{ fontSize: '24px' }}>Subject Categorys</Button></Link>
+                    <Link to="/addSubject" className='w-50' ><Button className='py-3 w-100' style={{ fontSize: '24px' }}>Subjects</Button></Link>
+                    <Link to="/addTopic" className='w-50' ><Button className='py-3 w-100' style={{ fontSize: '24px' }}>Topics</Button></Link>
 
                     <hr />
-                    <Link to="/addQuestionType" className='w-50' ><Button className='py-3 w-100' style={{ fontSize: '24px' }}>Add Question Type</Button></Link>
-                    <Link to="/addQuestion" className='w-50' ><Button className='py-3 w-100' style={{ fontSize: '24px' }}>Add Question</Button></Link>
+                    <Link to="/addQuestionType" className='w-50' ><Button className='py-3 w-100' style={{ fontSize: '24px' }}>Question Types</Button></Link>
+                    <Link to="/addQuestion" className='w-50' ><Button className='py-3 w-100' style={{ fontSize: '24px' }}>Questions</Button></Link>
 
                     <hr />
-                    <Link to="/verify-user" className='w-50' ><Button className='py-3 w-100' style={{ fontSize: '24px' }}>Verify User</Button></Link>
+                    <Link to="/verify-user" className='w-50' ><Button className='py-3 w-100' style={{ fontSize: '24px' }}>Verify Users</Button></Link>
                     <Link to="/create-admin" className='w-50' ><Button className='py-3 w-100' style={{ fontSize: '24px' }}>Create Admin</Button></Link>
 
                 </Container>

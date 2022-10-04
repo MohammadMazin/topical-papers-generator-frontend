@@ -31,6 +31,7 @@ const AddQuestion = () => {
     const [levelId, setLevelId] = useState(null)
     const [subjectId, setSubjectId] = useState(null)
     const [topicId, setTopicId] = useState(null)
+    const [paid, setPaid] = useState(false)
 
     const [loading, setLoading] = useState(false)
 
@@ -84,6 +85,7 @@ const AddQuestion = () => {
             subjectId,
             questionTypeId,
             topicId,
+            paid,
             adminId: localStorage.getItem("_id")
         }
 
@@ -147,6 +149,15 @@ const AddQuestion = () => {
                 className='w-25'
                 onChange={(e) => setMarks(parseInt(e.target.value))}
             />
+
+            <Form.Label>Question Tier</Form.Label>
+            <Form.Select
+                className='w-25'
+                onChange={(e) => setPaid(e.target.value)}
+            >
+                <option value={false} selected>Free Tier</option>
+                <option value={true} >Paid Tier</option>
+            </Form.Select>
 
             <Form.Label className='mt-3'>Question Type</Form.Label>
             <Form.Select

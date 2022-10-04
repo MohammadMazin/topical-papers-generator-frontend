@@ -5,12 +5,11 @@ import { toast } from 'react-toastify'
 import Table from 'react-bootstrap/Table';
 import { getVerifiedUsers, setUserPaidStatus } from '../services/user'
 import Form from 'react-bootstrap/Form';
-import { useNavigate } from 'react-router-dom'
 import Spinner from '../components/Spinner';
+
 const Users = () => {
     const [verifiedUsers, setVerifiedUsers] = useState([])
     const [loading, setLoading] = useState(false)
-    const navigate = useNavigate()
 
     useEffect(() => {
         fetchData()
@@ -34,7 +33,7 @@ const Users = () => {
             paid,
             adminId: localStorage.getItem("_id")
         }
-        //////////////
+
         const res = await setUserPaidStatus(data)
         if (res.success) {
             if (paid)
