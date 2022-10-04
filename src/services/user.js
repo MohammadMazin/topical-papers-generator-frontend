@@ -7,6 +7,10 @@ export const getAllUsers = async() => {
     const response = await axios.get(baseUrl)
     return response.data
 }
+export const getVerifiedUsers = async() => {
+    const response = await axios.get(`${baseUrl}verified`)
+    return response.data
+}
 
 export const getSingleUser = async(data) => {
     const response = await axios.post(`${baseUrl}user`, data)
@@ -16,6 +20,12 @@ export const getSingleUser = async(data) => {
 export const getUnverifiedUsers = async() => {
     const response = await axios.get(`${baseUrl}unverified`)
     return response.data
+}
+
+export const setUserPaidStatus = async(data) => {
+    const response = await axios.post(`${baseUrl}setPaid`, data)
+    return response.data
+
 }
 
 export const addUser = async(data) => {

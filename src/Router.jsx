@@ -13,6 +13,7 @@ import AddSubjectCategory from './pages/addSubjectCategory'
 import AddSubject from './pages/addSubject'
 import AddTopic from './pages/addTopic'
 import AddAdmin from './pages/addAdmin'
+import Users from './pages/users'
 import EditQuestion from './pages/editQuestion'
 import DeleteQuestion from './pages/deleteQuestion'
 import VerifyUser from './pages/verifyUser'
@@ -74,6 +75,7 @@ function Router() {
                                 <Route path="/edit" element={<EditQuestion />} />
                                 <Route path="/delete" element={<DeleteQuestion />} />
                                 <Route path="/verify-user" element={<VerifyUser />} />
+                                <Route path="/users" element={<Users />} />
                                 <Route path="/create-admin" element={<AddAdmin />} />
                             </> :
                             <>

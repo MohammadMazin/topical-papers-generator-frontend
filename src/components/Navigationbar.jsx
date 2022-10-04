@@ -13,8 +13,9 @@ export default function NavigationBar() {
 
     const { userState, setUserState } = useContext(UserContext)
     const [username, setUsername] = useState("")
-
     const navigate = useNavigate()
+
+    console.log(userState)
 
 
     useEffect(() => {
@@ -39,9 +40,14 @@ export default function NavigationBar() {
 
                 <Navbar.Collapse id="responsive-navbar-nav ">
                     <Nav className="me-auto d-flex justify-content-between w-100 px-4">
-                        <Link style={{ color: 'white', textDecoration: 'none', }} to="/">
-                            <span style={{ color: 'white', textDecoration: 'none', }}>Home</span>
-                        </Link>
+                        <Container className='p-0 d-flex gap-4 align-items-center'>
+                            <Link style={{ color: 'white', textDecoration: 'none', }} to="/">
+                                <span style={{ color: 'white', textDecoration: 'none', }}>Home</span>
+                            </Link>
+                            {localStorage.getItem('isAdmin') && <Link style={{ color: 'white', textDecoration: 'none', }} to="/users">
+                                <span style={{ color: 'white', textDecoration: 'none', }}>Users</span>
+                            </Link>}
+                        </Container>
                         <p className='mb-auto mt-auto' style={{ color: 'white' }}>Logged in as: {username}</p>
                         {/* <Nav.Link href="#pricing">Pricing</Nav.Link>
                         <NavDropdown title="Dropdown" id="collasible-nav-dropdown">
