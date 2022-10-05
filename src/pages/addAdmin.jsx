@@ -32,8 +32,10 @@ const AddAdmin = () => {
         if (res.success) {
             toast.success("New Admin has been added to the database")
             navigate('/')
-        } else
+        } else {
             toast.error("Failed to create admin")
+            toast.error(res.message)
+        }
 
     }
 

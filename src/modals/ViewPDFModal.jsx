@@ -57,7 +57,7 @@ const ViewPDFModal = ({ show, handleClose, selectedQuestions, clearSelectedQuest
                                     {selectedQuestions.map((question, index) => {
                                         return (
                                             <>
-                                                <b>{index + 1}</b>
+                                                <b>Question {index + 1}</b>
                                                 <div dangerouslySetInnerHTML={{ __html: question.question }} />
                                                 <hr />
                                             </>

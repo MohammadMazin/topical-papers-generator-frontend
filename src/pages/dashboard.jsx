@@ -92,10 +92,10 @@ const Dashboard = () => {
 
         const data = {
             query: search,
-            boardId,
-            levelId,
-            subjectId,
-            topicId,
+            boardId: boardId === 'null' ? null : boardId,
+            levelId: levelId === 'null' ? null : levelId,
+            subjectId: subjectId === 'null' ? null : subjectId,
+            topicId: topicId === 'null' ? null : topicId,
             filterOn,
             userId: localStorage.getItem("_id")
         }
@@ -139,7 +139,8 @@ const Dashboard = () => {
         })
     }
 
-    const handleSelectSubject = async id => {
+    const handleSelectSubject = async _id => {
+        let id = _id === 'null' ? null : _id
         setSubjectId(id)
 
         const res = await getTopicsOfSubject({ subjectId: id })
@@ -198,7 +199,7 @@ const Dashboard = () => {
                                     <Container className='p-0'>
                                         <Form.Label>Select Level</Form.Label>
                                         <Form.Select aria-label="Default select example" disabled={levels.length === 0} onChange={(e) => setLevelId(e.target.value)}>
-                                            <option value={null}>All Levels</option>
+                                            <option value={'null'}>All Levels</option>
                                             {levels.map((level, index) => {
                                                 const { _id, name } = level
                                                 return <option key={_id} value={_id}>{name}</option>
@@ -212,7 +213,7 @@ const Dashboard = () => {
                                     <Container className='p-0'>
                                         <Form.Label>Select Subject</Form.Label>
                                         <Form.Select aria-label="Default select example" onChange={(e) => handleSelectSubject(e.target.value)}>
-                                            <option value={null}>All Subjects</option>
+                                            <option value={'null'}>All Subjects</option>
                                             {subjects.map((subject, index) => {
                                                 const { _id, name } = subject
                                                 return <option key={_id} value={_id}>{name}</option>
@@ -224,7 +225,7 @@ const Dashboard = () => {
                                     <Container className='p-0'>
                                         <Form.Label>Select Topic</Form.Label>
                                         <Form.Select aria-label="Default select example" disabled={topics.length === 0} onChange={(e) => setTopicId(e.target.value)}>
-                                            <option value={null}>All Topics</option>
+                                            <option value={'null'}>All Topics</option>
                                             {topics.map((topic, index) => {
                                                 const { _id, name } = topic
                                                 return <option key={_id} value={_id}>{name}</option>
@@ -253,7 +254,7 @@ const Dashboard = () => {
 
                                         <Container className='p-0 d-flex'>
                                             <Container className="mt-4 rounded bg-white bg-gradient py-2">
-                                                <h3 className='p-3'>Search Results</h3>
+                                                <h3 className='p-3'>{questions.length} Search Results</h3>
                                                 {questions.map((question, index) => {
 
                                                     selectedQuestions.forEach(selectedQuestion => {

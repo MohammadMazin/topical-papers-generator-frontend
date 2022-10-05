@@ -3,6 +3,11 @@ import { dbUrl } from "../globals/dbUrl";
 
 const baseUrl = `${dbUrl}questions/`
 
+export const getAllQuestions = async() => {
+    const response = await axios.get(`${baseUrl}`)
+    return response.data
+}
+
 export const searchQuestions = async(data) => {
     const response = await axios.post(`${baseUrl}search`, data)
     return response.data

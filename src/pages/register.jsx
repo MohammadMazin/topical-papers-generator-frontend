@@ -76,6 +76,7 @@ export default function Register() {
         }
         else {
             toast.error('Failed Signed Up')
+            toast.error(res.message)
         }
     }
 
