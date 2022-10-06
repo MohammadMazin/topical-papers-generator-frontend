@@ -37,7 +37,7 @@ const AddQuestion = () => {
     const [levelId, setLevelId] = useState(null)
     const [subjectId, setSubjectId] = useState(null)
     const [topicId, setTopicId] = useState(null)
-    const [paid, setPaid] = useState(false)
+    const [paid, setPaid] = useState(0)
 
     const [show, setShow] = useState(false)
     const [loading, setLoading] = useState(false)
@@ -182,8 +182,9 @@ const AddQuestion = () => {
                                 className='w-25'
                                 onChange={(e) => setPaid(e.target.value)}
                             >
-                                <option value={false} selected>Free Tier</option>
-                                <option value={true} >Paid Tier</option>
+                                <option value={0} selected>Free Tier</option>
+                                <option value={1} >Paid Tier</option>
+                                <option value={2} >Guest Tier</option>
                             </Form.Select>
 
                             <Form.Label className='mt-3'>Question Type</Form.Label>
