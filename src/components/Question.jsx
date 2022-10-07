@@ -4,7 +4,7 @@ import Badge from 'react-bootstrap/Badge';
 
 
 const Question = ({ data, setSelectedQuestion, handleAddQuestion, handleRemoveQuestion }) => {
-    const { title, description, marks, topicId, questionTypeId, boardId, levelId, subjectId, paid, _id, selected } = data
+    const { title, description, marks, topicId, courseId, questionTypeId, boardId, levelId, subjectId, paid, _id, selected } = data
 
     return (
         <div className='card my-4'>
@@ -15,6 +15,7 @@ const Question = ({ data, setSelectedQuestion, handleAddQuestion, handleRemoveQu
                 </Container>
                 <Container className='d-flex p-0 gap-3' >
                     <Badge pill>Topic: {topicId?.name}</Badge>
+                    <Badge pill>Course ID: {courseId}</Badge>
                     <Badge pill>{questionTypeId?.name}</Badge>
                     <Badge pill>{boardId?.name} - {levelId?.name}</Badge>
                     <Badge pill>{subjectId?.name}</Badge>

@@ -33,6 +33,7 @@ const AddQuestion = () => {
     const [subjects, setSubjects] = useState([])
     const [levels, setLevels] = useState([])
     const [topics, setTopics] = useState([])
+    const [courseId, setCourseId] = useState([])
 
     const [boardId, setBoardId] = useState(null)
     const [levelId, setLevelId] = useState(null)
@@ -98,6 +99,7 @@ const AddQuestion = () => {
             marks,
             question,
             answer,
+            courseId,
             boardId,
             levelId,
             subjectId,
@@ -110,7 +112,7 @@ const AddQuestion = () => {
         const res = await addQuestion(data)
         if (res.success) {
             toast.success('Question added to database!')
-            navigate('/')
+            // navigate('/')
         }
         else
             toast.error('Failed to add question to database!')
@@ -189,6 +191,15 @@ const AddQuestion = () => {
                                 className="me-2 mb-4"
                                 aria-label="description"
                                 onChange={(e) => setDescription(e.target.value)}
+                            />
+
+                            <Form.Label>Course ID</Form.Label>
+                            <Form.Control
+                                type="title"
+                                placeholder=""
+                                className="me-2 mb-4 w-25"
+                                aria-label="title"
+                                onChange={(e) => setCourseId(e.target.value)}
                             />
 
                             <Form.Label>Marks</Form.Label>
@@ -335,6 +346,7 @@ const AddQuestion = () => {
                             <th>Description</th>
                             <th>Marks</th>
                             <th>Detail</th>
+                            <th>Course ID</th>
                             <th>Board</th>
                             <th>Level</th>
                             <th>Subject</th>
@@ -346,7 +358,7 @@ const AddQuestion = () => {
                     </thead>
                     <tbody>
                         {questions.map((q, index) => {
-                            const { title, description, marks, topicId, questionTypeId, boardId, levelId, subjectId, paid, _id } = q
+                            const { title, description, marks, courseId, topicId, questionTypeId, boardId, levelId, subjectId, paid, _id } = q
                             return (
                                 <tr key={_id}>
                                     <td>{index + 1}</td>
@@ -356,6 +368,7 @@ const AddQuestion = () => {
                                     <td>
                                         <span onClick={() => handleShowQuestion(q)} style={{ color: '#004cff', cursor: 'pointer' }}>View Detail</span>
                                     </td>
+                                    <td>{courseId}</td>
                                     <td>{boardId?.name}</td>
                                     <td>{levelId?.name}</td>
                                     <td>{subjectId?.name}</td>

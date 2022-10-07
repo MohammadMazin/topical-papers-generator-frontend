@@ -29,6 +29,7 @@ const Dashboard = () => {
     const [topics, setTopics] = useState([])
 
     const [boardId, setBoardId] = useState(null)
+    const [courseId, setCourseId] = useState(null)
     const [levelId, setLevelId] = useState(null)
     const [subjectId, setSubjectId] = useState(null)
     const [topicId, setTopicId] = useState(null)
@@ -96,6 +97,7 @@ const Dashboard = () => {
             levelId: levelId === 'null' ? null : levelId,
             subjectId: subjectId === 'null' ? null : subjectId,
             topicId: topicId === 'null' ? null : topicId,
+            courseId: courseId === '' ? null : courseId,
             filterOn,
             userId: localStorage.getItem("_id")
         }
@@ -233,6 +235,17 @@ const Dashboard = () => {
                                             }
                                         </Form.Select>
                                     </Container>
+                                </Container>
+                                <Form.Label>Course ID</Form.Label>
+                                <Form.Control
+                                    type="search"
+                                    placeholder="Type Course ID"
+                                    className="me-2"
+                                    aria-label="Search"
+                                    onChange={(e) => setCourseId(e.target.value)}
+                                />
+                                <Container>
+
                                 </Container>
                             </Accordion.Body>
                         </Accordion.Item>

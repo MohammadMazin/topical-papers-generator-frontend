@@ -8,8 +8,15 @@ export const getQuestionTypes = async() => {
     return response.data
 }
 
-// TODO: add question types page in frontend
 export const addQuestionType = async(data) => {
     const response = await axios.post(`${baseUrl}add`, data)
+    return response.data
+}
+export const editQuestionType = async(data) => {
+    const response = await axios.post(`${baseUrl}edit`, data)
+    return response.data
+}
+export const deleteQuestionType = async(data) => {
+    const response = await axios.post(`${baseUrl}delete`, data)
     return response.data
 }
