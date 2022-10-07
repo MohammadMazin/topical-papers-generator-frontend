@@ -14,6 +14,8 @@ const AddQuestionType = () => {
     const [name, setName] = useState('')
     const [description, setDescription] = useState('')
     const [questionTypes, setQuestionTypes] = useState([])
+    const [loading, setLoading] = useState(false)
+
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -47,7 +49,9 @@ const AddQuestionType = () => {
         else {
             toast.error("Failed to Add Question Type")
         }
+    }
 
+    const handleDelete = async (_id) => {
     }
 
 
@@ -90,6 +94,7 @@ const AddQuestionType = () => {
                             <th>#</th>
                             <th>Name</th>
                             <th>Description</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -99,6 +104,12 @@ const AddQuestionType = () => {
                                     <td>{index + 1}</td>
                                     <td>{qType.name}</td>
                                     <td>{qType.description}</td>
+                                    <td>
+                                        <Container className='p-0 d-flex gap-2'>
+                                            <Button variant="warning m-0" onClick={() => handleDelete(qType._id)} disabled={loading}>Edit</Button>
+                                            <Button variant="danger m-0" onClick={() => handleDelete(qType._id)} disabled={loading}>Delete</Button>
+                                        </Container>
+                                    </td>
                                 </tr>
                             )
                         })}

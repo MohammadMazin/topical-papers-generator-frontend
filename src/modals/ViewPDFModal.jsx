@@ -31,7 +31,6 @@ const ViewPDFModal = ({ show, handleClose, selectedQuestions, clearSelectedQuest
             })
 
         } catch (error) {
-            console.log(error)
             toast.error('Failed to generate PDFs')
         }
 

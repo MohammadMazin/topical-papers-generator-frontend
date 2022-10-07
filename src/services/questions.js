@@ -17,3 +17,8 @@ export const addQuestion = async(data) => {
     const response = await axios.post(`${baseUrl}add`, data)
     return response.data
 }
+
+export const deleteQuestion = async(data) => {
+    const response = await axios.post(`${baseUrl}delete`, data)
+    return response.data
+}

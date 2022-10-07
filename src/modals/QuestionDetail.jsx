@@ -4,12 +4,10 @@ import Container from 'react-bootstrap/esm/Container'
 import Button from 'react-bootstrap/Button'
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
-import jsPDF from 'jspdf';
-import { toast } from 'react-toastify';
 
 const QuestionDetail = ({ data, show, handleClose }) => {
 
-    const {answer, question} = data
+    const { answer, question } = data
 
     const [key, setKey] = useState('question')
 

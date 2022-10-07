@@ -13,6 +13,16 @@ export const addLevel = async(data) => {
     return response.data
 }
 
+export const deleteLevel = async(data) => {
+    const response = await axios.post(`${baseUrl}delete`, data)
+    return response.data
+}
+
+export const editLevel = async(data) => {
+    const response = await axios.post(`${baseUrl}edit`, data)
+    return response.data
+}
+
 export const getAllLevelsOfBoard = async(data) => {
     const response = await axios.post(`${baseUrl}ofBoard`, data)
     return response.data

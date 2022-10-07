@@ -6,7 +6,7 @@ import Accordion from 'react-bootstrap/Accordion'
 import Table from 'react-bootstrap/Table'
 import { getAllBoards } from '../services/boards'
 import { toast } from 'react-toastify'
-import { addQuestion, getAllQuestions } from '../services/questions'
+import { addQuestion, deleteQuestion, getAllQuestions } from '../services/questions'
 import { getQuestionTypes } from '../services/questionTypes'
 import { getAllLevelsOfBoard } from '../services/levels'
 import { getAllSubjects } from '../services/subjects'
@@ -14,6 +14,7 @@ import CodeEditor from '@uiw/react-textarea-code-editor';
 import { getTopicsOfSubject } from '../services/topics'
 import { useNavigate } from 'react-router-dom'
 import QuestionDetail from '../modals/QuestionDetail'
+import EditQuestion from '../modals/EditQuestion'
 
 const AddQuestion = () => {
 
@@ -40,6 +41,7 @@ const AddQuestion = () => {
     const [paid, setPaid] = useState(0)
 
     const [show, setShow] = useState(false)
+    const [showEdit, setShowEdit] = useState(false)
     const [loading, setLoading] = useState(false)
 
     const navigate = useNavigate()
@@ -139,6 +141,27 @@ const AddQuestion = () => {
     const handleShowQuestion = (question) => {
         setSelectedQuestion(question)
         setShow(true)
+    }
+    const handleShowEdit = (question) => {
+        setSelectedQuestion(question)
+        setShowEdit(true)
+    }
+    const handleHideEdit = () => setShowEdit(false)
+
+    const handleDelete = async (_id) => {
+        setLoading(true)
+        const data = {
+            _id,
+            adminId: localStorage.getItem("_id")
+        }
+        const res = await deleteQuestion(data)
+        if (res.success) {
+            toast.success("Question Deleted Successfully!")
+            setQuestions((prevQuestions) => prevQuestions.filter(question => question._id !== _id))
+        }
+        else
+            toast.error("Failed to Delete Question!")
+        setLoading(false)
     }
 
     return (
@@ -318,12 +341,12 @@ const AddQuestion = () => {
                             <th>Topic</th>
                             <th>Question Type</th>
                             <th>Tier</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {questions.map((q, index) => {
                             const { title, description, marks, topicId, questionTypeId, boardId, levelId, subjectId, paid, _id } = q
-                            console.log(paid)
                             return (
                                 <tr key={_id}>
                                     <td>{index + 1}</td>
@@ -339,6 +362,12 @@ const AddQuestion = () => {
                                     <td>{topicId?.name}</td>
                                     <td>{questionTypeId?.name}</td>
                                     <td>{paid ? <b>Paid</b> : 'Free'}</td>
+                                    <td>
+                                        <Container className='p-0 d-flex gap-2'>
+                                            <Button variant="warning m-0" onClick={() => handleShowEdit(q)} disabled={loading}>Edit</Button>
+                                            <Button variant="danger m-0" onClick={() => handleDelete(_id)} disabled={loading}>Delete</Button>
+                                        </Container>
+                                    </td>
                                 </tr>
                             )
                         })
@@ -348,6 +377,7 @@ const AddQuestion = () => {
                 </Table>
             </div>
             {show && <QuestionDetail show={show} handleClose={handleClose} data={selectedQuestion} />}
+            {showEdit && <EditQuestion show={showEdit} handleClose={handleHideEdit} data={selectedQuestion} />}
         </>
     )
 }

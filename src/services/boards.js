@@ -12,3 +12,13 @@ export const addBoard = async(data) => {
     const response = await axios.post(`${baseUrl}add`, data)
     return response.data
 }
+
+export const deleteBoard = async(data) => {
+    const response = await axios.post(`${baseUrl}delete`, data)
+    return response.data
+}
+
+export const editBoard = async(data) => {
+    const response = await axios.post(`${baseUrl}edit`, data)
+    return response.data
+}

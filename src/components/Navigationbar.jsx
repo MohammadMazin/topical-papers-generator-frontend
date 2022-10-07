@@ -15,7 +15,6 @@ export default function NavigationBar() {
     const [username, setUsername] = useState("")
     const navigate = useNavigate()
 
-    console.log(userState)
 
 
     useEffect(() => {

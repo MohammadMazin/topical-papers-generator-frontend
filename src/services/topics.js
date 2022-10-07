@@ -13,6 +13,16 @@ export const addTopic = async(data) => {
     return response.data
 }
 
+export const editTopic = async(data) => {
+    const response = await axios.post(`${baseUrl}edit`, data)
+    return response.data
+}
+
+export const deleteTopic = async(data) => {
+    const response = await axios.post(`${baseUrl}delete`, data)
+    return response.data
+}
+
 export const getTopicsOfSubject = async(data) => {
     const response = await axios.post(`${baseUrl}ofSubject`, data)
     return response.data
