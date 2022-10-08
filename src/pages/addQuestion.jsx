@@ -303,6 +303,8 @@ const AddQuestion = () => {
                                             fontSize: 18,
                                             backgroundColor: "#04212b",
                                             fontFamily: 'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
+                                            overflowY: 'scroll',
+                                            maxHeight: '200px'
                                         }}
                                     />
                                 </Container>
@@ -322,6 +324,8 @@ const AddQuestion = () => {
                                             fontSize: 18,
                                             backgroundColor: "#04212b",
                                             fontFamily: 'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
+                                            overflowY: 'scroll',
+                                            maxHeight: '200px'
                                         }}
                                     />
                                 </Container>
@@ -390,7 +394,20 @@ const AddQuestion = () => {
                 </Table>
             </div>
             {show && <QuestionDetail show={show} handleClose={handleClose} data={selectedQuestion} />}
-            {showEdit && <EditQuestion show={showEdit} handleClose={handleHideEdit} data={selectedQuestion} />}
+            {showEdit && <EditQuestion
+                show={showEdit}
+                handleClose={handleHideEdit}
+                data={selectedQuestion}
+                questionTypes={questionTypes}
+                handleGetLevelsOfBoard={handleGetLevelsOfBoard}
+                handleSelectSubject={handleSelectSubject}
+                levels={levels}
+                boards={boards}
+                subjects={subjects}
+                topics={topics}
+                setLevels={setLevels}
+                setTopics={setTopics}
+            />}
         </>
     )
 }
