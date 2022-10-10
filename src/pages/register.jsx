@@ -83,13 +83,13 @@ export default function Register() {
     return (
         <div className="p-0">
             <main className="d-flex" style={{ height: '100vh' }}>
-                <Container className='w-50 card p-5 d-flex flex-column align-items-center justify-content-center'>
-                    <Link to="/">Back To Login</Link>
+                <Container className='w-50 card p-5 d-flex flex-column align-items-center justify-content-center' style={{ flex: 1 }}>
+                    <Link to="/" className='my-2'>Back To Login</Link>
                     <h1 className='mt-2 mb-2' style={{ textAlign: 'center' }}>Topical Papers Generator</h1>
                     <hr />
                     <h3 className='mb-4' style={{ textAlign: 'center' }}>Sign Up</h3>
 
-                    <Form className='w-75'>
+                    <Form className='w-75' style={{ minWidth: '300px' }}>
                         <Form.Group className="mb-3" controlId="formBasicEmail">
                             <Form.Label>Full Name</Form.Label>
                             <Form.Control type="text" placeholder="Enter Full Name" required={true} onChange={e => setName(e.target.value)} />
@@ -140,8 +140,8 @@ export default function Register() {
                     </Form>
 
                 </Container>
-                <div className='w-50 bg-white'>
-                    <img className='w-100 h-100' src="https://assets.entrepreneur.com/content/3x2/2000/20150115183825-books-reading.jpeg" style={{ objectFit: 'cover' }} />
+                <div className='bg-white registerImage' style={{ flex: 1 }}>
+                    <img alt="books" className='w-100 h-100' src="https://assets.entrepreneur.com/content/3x2/2000/20150115183825-books-reading.jpeg" style={{ objectFit: 'cover' }} />
                 </div>
             </main >
             {/* 

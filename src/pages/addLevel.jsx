@@ -96,7 +96,7 @@ const AddLevel = () => {
                 <h3>Add Level</h3>
                 <hr />
 
-                <Form className='w-50' onSubmit={handleSubmit}>
+                <Form className='w-50' onSubmit={handleSubmit} style={{ minWidth: '300px' }}>
 
                     <Form.Label>Level Name</Form.Label>
                     <Form.Control

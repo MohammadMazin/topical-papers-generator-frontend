@@ -88,7 +88,7 @@ const AddSubjectCategory = () => {
                 <h3>Add Subject Category</h3>
                 <hr />
 
-                <Form className='w-50' onSubmit={handleSubmit}>
+                <Form className='w-50' onSubmit={handleSubmit} style={{ minWidth: '300px' }}>
 
                     <Form.Label>Subject Category Name</Form.Label>
                     <Form.Control

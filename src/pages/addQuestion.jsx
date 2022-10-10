@@ -172,7 +172,7 @@ const AddQuestion = () => {
                 <Accordion>
                     <Accordion.Item eventKey="0">
                         <Accordion.Header>Add Question</Accordion.Header>
-                        <Accordion.Body>
+                        <Accordion.Body >
                             <h1>Add Question</h1>
                             <hr />
                             <Form.Label>Question Title</Form.Label>
@@ -200,6 +200,7 @@ const AddQuestion = () => {
                                 className="me-2 mb-4 w-25"
                                 aria-label="title"
                                 onChange={(e) => setCourseId(e.target.value)}
+                                style={{ minWidth: '200px' }}
                             />
 
                             <Form.Label>Marks</Form.Label>
@@ -209,12 +210,15 @@ const AddQuestion = () => {
                                 aria-label="Title"
                                 className='w-25'
                                 onChange={(e) => setMarks(parseInt(e.target.value))}
+                                style={{ minWidth: '200px' }}
                             />
 
                             <Form.Label>Question Tier</Form.Label>
                             <Form.Select
                                 className='w-25'
                                 onChange={(e) => setPaid(e.target.value)}
+                                style={{ minWidth: '200px' }}
+
                             >
                                 <option value={0} selected>Free Tier</option>
                                 <option value={1} >Paid Tier</option>
@@ -225,6 +229,8 @@ const AddQuestion = () => {
                             <Form.Select
                                 className='w-25'
                                 onChange={(e) => setQuestionTypeId(e.target.value)}
+                                style={{ minWidth: '200px' }}
+
                             >
                                 <option value="" disabled selected>Select your Question Type</option>
                                 {questionTypes.map((questionType, index) => {

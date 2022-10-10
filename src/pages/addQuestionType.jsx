@@ -89,7 +89,7 @@ const AddQuestionType = () => {
                 <h3>Add Question Type</h3>
                 <hr />
 
-                <Form className='w-50' onSubmit={handleSubmit}>
+                <Form className='w-50' onSubmit={handleSubmit} style={{ minWidth: '300px' }}>
 
                     <Form.Label>Question Type Name</Form.Label>
                     <Form.Control

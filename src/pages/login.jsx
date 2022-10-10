@@ -51,15 +51,15 @@ export default function Login() {
   return (
     <div>
       <main className='d-flex' style={{ height: '100vh' }}>
-        <div className='w-50 bg-white'>
-          <img className='w-100 h-100' src="https://img.freepik.com/premium-photo/asian-woman-university-student-casual-writing-paper-notebook-teenager-student-hand-writing-lecture-note-book-school-campus-college-university-education_7190-3148.jpg?w=2000" style={{ objectFit: 'cover' }} />
+        <div className='bg-white loginImage' style={{ flex: 1 }}>
+          <img alt="person writing" className='w-100 h-100' src="https://img.freepik.com/premium-photo/asian-woman-university-student-casual-writing-paper-notebook-teenager-student-hand-writing-lecture-note-book-school-campus-college-university-education_7190-3148.jpg?w=2000" style={{ objectFit: 'cover' }} />
         </div>
-        <Container className='w-50 p-5 h-100 d-flex flex-column align-items-center justify-content-center bg-white'>
+        <Container className='p-5 h-100 d-flex flex-column align-items-center justify-content-center bg-white' style={{ flex: 1 }}>
           <h1 className='mt-2 mb-2' style={{ textAlign: 'center' }}>Topical Papers Generator</h1>
           <hr />
           <h3 className='mb-4' style={{ textAlign: 'center' }}>Log In</h3>
 
-          <Form onSubmit={handleLogin} className='w-75'>
+          <Form onSubmit={handleLogin} className='w-75' style={{ minWidth: '300px' }}>
             <Form.Group className="mb-3" controlId="formBasicEmail">
               <Form.Label>Email address</Form.Label>
               <Form.Control type="email" placeholder="Enter email" onChange={(e) => setEmail(e.target.value)} />

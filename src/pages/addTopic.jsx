@@ -97,7 +97,7 @@ const AddTopic = () => {
                 <h3>Add Topic</h3>
                 <hr />
 
-                <Form className='w-50' onSubmit={handleSubmit}>
+                <Form className='w-50' onSubmit={handleSubmit} style={{ minWidth: '300px' }}>
 
                     <Form.Label>Topic Name</Form.Label>
                     <Form.Control

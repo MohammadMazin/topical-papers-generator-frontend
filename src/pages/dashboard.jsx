@@ -17,6 +17,11 @@ import Tabs from 'react-bootstrap/Tabs';
 import ViewPDFModal from '../modals/ViewPDFModal'
 import { getTopicsOfSubject } from '../services/topics'
 
+function getWindowDimensions() {
+    const { innerWidth: width, } = window;
+    return width
+}
+
 const Dashboard = () => {
 
     // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -40,7 +45,10 @@ const Dashboard = () => {
     const [key, setKey] = useState('question');
     const [selectedQuestion, setSelectedQuestion] = useState(null)
 
+    const [width, setWidth] = useState(getWindowDimensions())
+
     const [show, setShow] = useState(false)
+
 
 
     useEffect(() => {
@@ -66,7 +74,13 @@ const Dashboard = () => {
             }
         }
 
+        function handleResize() {
+            setWidth(getWindowDimensions());
+        }
+
         fetchData()
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
     }, [])
 
     // TODO: Test with levels of other boards - add data into other boards
@@ -269,7 +283,6 @@ const Dashboard = () => {
                                             <Container className="mt-4 rounded bg-white bg-gradient py-2">
                                                 <h3 className='p-3'>{questions.length} Search Results</h3>
                                                 {questions.map((question, index) => {
-
                                                     selectedQuestions.forEach(selectedQuestion => {
                                                         if (selectedQuestion._id === question._id)
                                                             question.selected = true
@@ -281,12 +294,13 @@ const Dashboard = () => {
                                                         setSelectedQuestion={setSelectedQuestion}
                                                         handleAddQuestion={() => handleAddQuestion(question._id)}
                                                         handleRemoveQuestion={() => handleRemoveQuestion(question._id)}
+                                                        width={width}
                                                     />
                                                 })
                                                 }
                                             </Container>
 
-                                            <Container className="bg-white mt-4" >
+                                            <Container className="bg-white mt-4 dashboardTab" >
                                                 <div style={{ position: 'sticky', top: '30px' }}>
 
                                                     <Tabs
@@ -294,7 +308,6 @@ const Dashboard = () => {
                                                         activeKey={key}
                                                         onSelect={(k) => setKey(k)}
                                                         className="mb-3"
-
                                                     >
                                                         <Tab eventKey="question" title="Question">
                                                             <div dangerouslySetInnerHTML={{ __html: selectedQuestion?.question }} />

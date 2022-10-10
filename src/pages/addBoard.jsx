@@ -53,7 +53,6 @@ const AddBoard = () => {
     }
 
     const handleDelete = async (_id) => {
-
         setLoading(true)
         const data = {
             _id,
@@ -85,7 +84,7 @@ const AddBoard = () => {
                 <h3>Add Board</h3>
                 <hr />
 
-                <Form className='w-50' onSubmit={handleSubmit}>
+                <Form className='w-50' onSubmit={handleSubmit} style={{ minWidth: '300px' }}>
 
                     <Form.Label>Board Name</Form.Label>
                     <Form.Control

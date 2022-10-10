@@ -6,9 +6,9 @@ const DashboardAdmin = () => {
 
     return (
         <>
-            <Container className='p-0 my-4 d-flex flex-column  w-50'>
+            <Container className='p-0 my-4 d-flex flex-column  w-50' style={{ minWidth: '300px' }}>
                 <h1>Options</h1>
-                <Container className='py-5 card gap-3 d-flex align-items-center' style={{ flexWrap: 'wrap' }} >
+                <Container className='py-5 card gap-3 d-flex align-items-center' style={{ flexWrap: 'wrap', minWidth: '250px' }} >
                     <Link to="/addBoard" className='w-50' ><Button className='py-3 w-100' style={{ fontSize: '24px' }}>Boards</Button></Link>
                     <Link to="/addLevel" className='w-50' ><Button className='py-3 w-100' style={{ fontSize: '24px' }}>Levels</Button></Link>
 

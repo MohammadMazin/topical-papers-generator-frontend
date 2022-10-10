@@ -108,7 +108,7 @@ const AddSubject = () => {
                 <h3>Add Subject</h3>
                 <hr />
 
-                <Form className='w-50' onSubmit={handleSubmit}>
+                <Form className='w-50' onSubmit={handleSubmit} style={{ minWidth: '300px' }}>
                     <Form.Label>Subject Name</Form.Label>
                     <Form.Control
                         type="title"

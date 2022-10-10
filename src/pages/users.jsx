@@ -62,7 +62,7 @@ const Users = () => {
                 verifiedUsers.length === 0 ?
                     <Spinner text="Loading Users" />
                     :
-                    <Table striped bordered hover className='bg-white'>
+                    <Table striped bordered hover className='bg-white' >
                         <thead>
                             <tr>
                                 <th>#</th>

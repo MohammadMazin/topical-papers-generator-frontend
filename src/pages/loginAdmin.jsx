@@ -37,12 +37,12 @@ export default function LoginAdmin() {
     <div>
       <main>
 
-        <Container className='w-50 mt-5 card p-5'>
+        <Container className='w-50 mt-5 card p-5' style={{ minWidth: '300px' }}>
           <h1 className='mt-2 mb-2' style={{ textAlign: 'center' }}>Topical Papers Generator</h1>
           <hr />
           <h3 className='mb-4' style={{ textAlign: 'center' }}>Admin Log In</h3>
 
-          <Form onSubmit={handleLogin}>
+          <Form onSubmit={handleLogin} >
             <Form.Group className="mb-3" controlId="formBasicEmail">
               <Form.Label>Email address</Form.Label>
               <Form.Control type="email" placeholder="Enter email" onChange={(e) => setEmail(e.target.value)} />
