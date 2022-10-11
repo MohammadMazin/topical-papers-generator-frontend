@@ -13,95 +13,56 @@ const ViewPDFModal = ({ show, handleClose, selectedQuestions, clearSelectedQuest
 
     const [key, setKey] = useState('question')
 
-    const savePdf = () => {
+    const saveQuestionsPdf = async () => {
         window.html2canvas = html2canvas;
-
         window.scrollTo(0, 0);
 
-        // Convert the div to image (canvas)
-        html2canvas(document.getElementById("questions")).then(function (canvas) {
+        var dateObj = new Date();
+        var month = dateObj.getUTCMonth() + 1; //months from 1-12
+        var day = dateObj.getUTCDate();
+        var year = dateObj.getUTCFullYear();
 
+        const newdate = year + "/" + month + "/" + day;
+
+        console.log(window.Document)
+        await html2canvas(document.getElementById("questions"), {
+            scale: 3
+        }).then(function (canvas) {
             let h = document.querySelector('#questions').offsetHeight;
             let w = document.querySelector('#questions').offsetWidth;
-
-            // Get the image data as JPEG and 0.9 quality (0.0 - 1.0)
             var uri = canvas.toDataURL()
-            var filename = 's.png'
-
-            var link = document.createElement('a');
-
-            if (typeof link.download === 'string') {
-                link.href = uri;
-                link.download = filename;
-                //Firefox requires the link to be in the body
-                document.body.appendChild(link);
-                //simulate click
-                link.click();
-                //remove the link when done
-                document.body.removeChild(link);
-
-                var doc = new jsPDF('p', 'px', [w, h]);
-                doc.addImage(uri, 'JPEG', 0, 0, w, h)
-                doc.save('samplssse-file.pdf');
-
-
-
-            } else {
-
-                window.open(uri);
-
-            }
-
+            var doc = new jsPDF('p', 'px', [w, h]);
+            doc.addImage(uri, 'JPEG', 0, 0, w, h)
+            doc.save('Questions ' + newdate + ' - Topical Papers Generator.pdf');
+            setKey('answer')
         });
-
-        // var w = document.querySelector("#questions").offsetWidth;
-        // var h = document.querySelector("#questions").offsetHeight;
-        // console.log(w, h)
-        // html2canvas(document.querySelector("#questions"), {
-        //     useCORS: true,
-        //     dpi: 300, // Set to 300 DPI
-        //     scale: 3, // Adjusts your resolution
-        //     onrendered: function (canvas) {
-        // var img = canvas.toDataURL("image/jpeg", 1);
-        // console.log('1')
-        // var doc = new jsPDF('L', 'px', [w, h]);
-        // console.log('2')
-        // doc.addImage(img, 'JPEG', 0, 0, w, h);
-        // console.log('3')
-        // doc.save('sample-file.pdf');
-        // console.log('4')
-        //     }
-        // });
-        // console.log('first')
-
     }
 
+    const saveAnswersPdf = async () => {
+        window.html2canvas = html2canvas;
+        window.scrollTo(0, 0);
 
-    const generatePDF = () => {
-        try {
-            var w = document.querySelector("#questions").offsetWidth;
-            var h = document.querySelector("#questions").offsetHeight;
-            let docQuestions = new jsPDF("p", "px", "a3");
-            docQuestions.html(document.querySelector("#questions"), {
-                callback: function (pdf) {
-                    pdf.save("queestions.pdf");
-                }
-            })
+        var dateObj = new Date();
+        var month = dateObj.getUTCMonth() + 1; //months from 1-12
+        var day = dateObj.getUTCDate();
+        var year = dateObj.getUTCFullYear();
 
-            let docAnswers = new jsPDF("p", "pt", "a4");
-            docAnswers.html(document.querySelector("#answers"), {
-                callback: function (pdf) {
-                    pdf.save("answers.pdf");
-                    clearSelectedQuestions()
-                    handleClose()
-                }
-            })
+        const newdate = year + "/" + month + "/" + day;
 
-        } catch (error) {
-            toast.error('Failed to generate PDFs')
-        }
-
+        await html2canvas(document.getElementById("answers"), {
+            scale: 3
+        }).then(function (canvas) {
+            let h = document.querySelector('#answers').offsetHeight;
+            let w = document.querySelector('#answers').offsetWidth;
+            var uri = canvas.toDataURL()
+            var doc = new jsPDF('p', 'px', [w, h]);
+            doc.addImage(uri, 'JPEG', 0, 0, w, h)
+            doc.save('Answers ' + newdate + ' - Topical Papers Generator.pdf');
+            clearSelectedQuestions()
+            handleClose()
+        });
     }
+
 
     return (
         <Modal show={show} onHide={handleClose} size="lg">
@@ -109,6 +70,21 @@ const ViewPDFModal = ({ show, handleClose, selectedQuestions, clearSelectedQuest
                 <Modal.Title>Selected Questions</Modal.Title>
             </Modal.Header>
             <Modal.Body>
+                <Modal.Footer>
+                    <Button variant="danger" onClick={handleClose}>
+                        Close
+                    </Button>
+                    {
+                        key === "question" ?
+                            <Button variant="primary" onClick={saveQuestionsPdf}>
+                                Generate Questions PDF
+                            </Button>
+                            :
+                            <Button variant="primary" onClick={saveAnswersPdf}>
+                                Generate Answers PDF
+                            </Button>
+                    }
+                </Modal.Footer>
 
                 <Container className="bg-white mt-4" >
                     <Tabs
@@ -116,6 +92,7 @@ const ViewPDFModal = ({ show, handleClose, selectedQuestions, clearSelectedQuest
                         activeKey={key}
                         onSelect={(k) => setKey(k)}
                         className="mb-3"
+                        transition={false}
                     >
                         <Tab eventKey="question" title="Question" style={{ backgroundColor: 'light-blue' }}>
                             <Container id="questions" className='p-5 w-100' style={{ wordWrap: 'break-word' }}>
@@ -133,14 +110,14 @@ const ViewPDFModal = ({ show, handleClose, selectedQuestions, clearSelectedQuest
                             </Container>
                         </Tab>
                         <Tab eventKey="answer" title="Answer">
-                            <div id="answers" className='p-4'>
+                            <div id="answers" className=''>
                                 {selectedQuestions.map((question, index) => {
                                     return (
-                                        <>
+                                        <div style={{ width: '100%' }} >
                                             <b>Question {index + 1}</b>
-                                            <div dangerouslySetInnerHTML={{ __html: question.answer }} />
+                                            <div dangerouslySetInnerHTML={{ __html: question.answer }} style={{ width: '100%' }} />
                                             <hr />
-                                        </>
+                                        </div>
                                     )
                                 })}
                             </div>
@@ -157,9 +134,17 @@ const ViewPDFModal = ({ show, handleClose, selectedQuestions, clearSelectedQuest
                 <Button variant="danger" onClick={handleClose}>
                     Close
                 </Button>
-                <Button variant="primary" onClick={savePdf}>
-                    Generate PDF
-                </Button>
+                {
+                    key === "question" ?
+                        <Button variant="primary" onClick={saveQuestionsPdf}>
+                            Generate Questions PDF
+                        </Button>
+                        :
+                        <Button variant="primary" onClick={saveAnswersPdf}>
+                            Generate Answers PDF
+                        </Button>
+                }
+
             </Modal.Footer>
         </Modal >
     )
