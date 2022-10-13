@@ -17,6 +17,9 @@ import Tabs from 'react-bootstrap/Tabs';
 import ViewPDFModal from '../modals/ViewPDFModal'
 import { getTopicsOfSubject } from '../services/topics'
 
+import { PDFDownloadLink } from '@react-pdf/renderer'
+import QuestionPDF from '../components/QuestionPDF'
+
 function getWindowDimensions() {
     const { innerWidth: width, } = window;
     return width
@@ -181,7 +184,6 @@ const Dashboard = () => {
 
     return (
         <>
-            <p>V2</p>
             <Container>
                 <Container className='p-0 my-5 '>
                     <Container className="d-flex p-0">
@@ -332,27 +334,6 @@ const Dashboard = () => {
                 handleClose={handleCloseModal}
                 selectedQuestions={selectedQuestions}
                 clearSelectedQuestions={clearSelectedQuestions} />}
-
-            {/* <Container className="d-flex justify-content-center">
-
-                <Pagination>
-                    <Pagination.First />
-                    <Pagination.Prev />
-                    <Pagination.Item>{1}</Pagination.Item>
-                    <Pagination.Ellipsis />
-
-                    <Pagination.Item>{10}</Pagination.Item>
-                    <Pagination.Item>{11}</Pagination.Item>
-                    <Pagination.Item active>{12}</Pagination.Item>
-                    <Pagination.Item>{13}</Pagination.Item>
-                    <Pagination.Item disabled>{14}</Pagination.Item>
-
-                    <Pagination.Ellipsis />
-                    <Pagination.Item>{20}</Pagination.Item>
-                    <Pagination.Next />
-                    <Pagination.Last />
-                </Pagination>
-            </Container> */}
         </>
     )
 }

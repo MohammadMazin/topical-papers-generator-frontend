@@ -399,6 +399,7 @@ const AddQuestion = () => {
                     </tbody>
                 </Table>
             </div>
+
             {show && <QuestionDetail show={show} handleClose={handleClose} data={selectedQuestion} />}
             {showEdit && <EditQuestion
                 show={showEdit}

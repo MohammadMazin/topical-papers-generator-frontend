@@ -22,7 +22,6 @@ const EditQuestion = ({
     setTopics
 }) => {
 
-    console.log(data)
 
     const questionId = data._id
     const [title, setTitle] = useState(data.title)
@@ -100,15 +99,13 @@ const EditQuestion = ({
 
 
     return (
-        <Modal show={show} onHide={handleClose} size="lg" >
+        <Modal show={show} onHide={handleClose} fullscreen={true} >
             <Modal.Header closeButton>
                 <Modal.Title>Edit Question</Modal.Title>
             </Modal.Header>
-            <Modal.Body>
+            <Modal.Body >
 
-                <Container className="bg-white mt-4">
-                    <h1>Add Question</h1>
-                    <hr />
+                <Container className="bg-white mt-4" style={{ textAlign: 'left' }}>
                     <Form.Label>Question Title</Form.Label>
                     <Form.Control
                         type="title"
@@ -230,20 +227,24 @@ const EditQuestion = ({
                     <p className='mt-5'>Question</p>
                     <Container className=' p-0 d-flex gap-5 mt-1'>
                         <Container className='p-0 bg-white flex-1 p-0 w-50 d-flex flex-column'>
-                            <CodeEditor
-                                value={question}
-                                language="html"
-                                placeholder="Please enter HTML code."
-                                onChange={(evn) => setQuestion(evn.target.value)}
-                                padding={15}
-                                style={{
-                                    fontSize: 18,
-                                    backgroundColor: "#04212b",
-                                    fontFamily: 'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
-                                    overflowY: 'scroll',
-                                    maxHeight: '200px'
-                                }}
-                            />
+                            <Container style={{
+                                overflowY: 'auto',
+                                height: '500px'
+                            }}>
+                                <CodeEditor
+                                    value={question}
+                                    language="html"
+                                    placeholder="Please enter HTML code."
+                                    onChange={(evn) => setQuestion(evn.target.value)}
+                                    padding={15}
+                                    style={{
+                                        fontSize: 18,
+                                        backgroundColor: "#04212b",
+                                        fontFamily: 'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
+                                    }}
+                                />
+                            </Container>
+
                         </Container>
                         <div className='w-50 p-2' dangerouslySetInnerHTML={{ __html: question }} style={{ backgroundColor: 'white' }} />
                     </Container>
@@ -251,20 +252,23 @@ const EditQuestion = ({
                     <p className='mt-5'>Answer</p>
                     <Container className=' p-0 d-flex gap-5 mt-1'>
                         <Container className='p-0 bg-white flex-1 p-0 w-50 d-flex flex-column'>
-                            <CodeEditor
-                                value={answer}
-                                language="html"
-                                placeholder="Please enter HTML code."
-                                onChange={(evn) => setAnswer(evn.target.value)}
-                                padding={15}
-                                style={{
-                                    fontSize: 18,
-                                    backgroundColor: "#04212b",
-                                    fontFamily: 'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
-                                    overflowY: 'scroll',
-                                    maxHeight: '200px'
-                                }}
-                            />
+                            <Container style={{
+                                overflowY: 'auto',
+                                height: '500px'
+                            }}>
+                                <CodeEditor
+                                    value={answer}
+                                    language="html"
+                                    placeholder="Please enter HTML code."
+                                    onChange={(evn) => setAnswer(evn.target.value)}
+                                    padding={15}
+                                    style={{
+                                        fontSize: 18,
+                                        backgroundColor: "#04212b",
+                                        fontFamily: 'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
+                                    }}
+                                />
+                            </Container>
                         </Container>
 
                         <div className='w-50 p-2' dangerouslySetInnerHTML={{ __html: answer }} style={{ backgroundColor: 'white' }} />

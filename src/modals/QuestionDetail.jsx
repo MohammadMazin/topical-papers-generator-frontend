@@ -12,7 +12,7 @@ const QuestionDetail = ({ data, show, handleClose }) => {
     const [key, setKey] = useState('question')
 
     return (
-        <Modal show={show} onHide={handleClose} size="lg">
+        <Modal show={show} onHide={handleClose} size="xl">
             <Modal.Header closeButton>
                 <Modal.Title>Question Detail</Modal.Title>
             </Modal.Header>
