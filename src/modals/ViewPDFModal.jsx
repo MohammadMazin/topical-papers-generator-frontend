@@ -16,6 +16,64 @@ const ViewPDFModal = ({ show, handleClose, selectedQuestions, clearSelectedQuest
     const [key, setKey] = useState('question')
 
 
+    // const saveQuestionsPdf = async () => {
+    //     // window.html2canvas = html2canvas;
+    //     // window.scrollTo(0, 0);
+
+    //     // var dateObj = new Date();
+    //     // var month = dateObj.getUTCMonth() + 1; //months from 1-12
+    //     // var day = dateObj.getUTCDate();
+    //     // var year = dateObj.getUTCFullYear();
+
+    //     // const newdate = year + "/" + month + "/" + day;
+
+    //     // var childDivs = document.getElementById('questions').children
+
+
+
+
+    //     window.html2canvas = html2canvas;
+    //     window.scrollTo(0, 0);
+
+    //     var dateObj = new Date();
+    //     var month = dateObj.getUTCMonth() + 1; //months from 1-12
+    //     var day = dateObj.getUTCDate();
+    //     var year = dateObj.getUTCFullYear();
+
+    //     const newdate = year + "/" + month + "/" + day;
+
+    //     var childDivs = document.getElementById('questions').children
+    //     var doc = new jsPDF('p', 'mm', undefined, undefined, true);
+
+    //     for (let i = 0; i < childDivs.length; i++) {
+
+    //         await html2canvas(document.getElementById(`question${i}`), {
+    //             scale: 2
+    //         }).then(function (canvas) {
+    //             var imgData = canvas.toDataURL('image/jpeg');
+    //             var imgWidth = 210;
+    //             var pageHeight = 295;
+    //             var imgHeight = canvas.height * imgWidth / canvas.width;
+    //             var heightLeft = imgHeight;
+
+    //             var position = 0;
+
+    //             doc.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+    //             heightLeft -= pageHeight;
+
+    //             while (heightLeft >= 0) {
+    //                 position = heightLeft - imgHeight;
+    //                 doc.addPage();
+    //                 doc.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight, undefined, 'SLOW');
+    //                 heightLeft -= pageHeight;
+    //             }
+
+    //         });
+
+
+    //     }
+    //     doc.save('file.pdf')
+    // }
     const saveQuestionsPdf = async () => {
         // window.html2canvas = html2canvas;
         // window.scrollTo(0, 0);
@@ -31,31 +89,7 @@ const ViewPDFModal = ({ show, handleClose, selectedQuestions, clearSelectedQuest
 
 
 
-        // await html2canvas(document.getElementById(`questions`), {
-        //     scale: 2
-        // }).then(function (canvas) {
-        //     var imgData = canvas.toDataURL('image/png');
-        //     var imgWidth = 210;
-        //     var pageHeight = 295;
-        //     var imgHeight = canvas.height * imgWidth / canvas.width;
-        //     var heightLeft = imgHeight;
 
-
-        //     var doc = new jsPDF('p', 'mm', "a4");
-        //     var position = 0;
-
-        //     doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        //     heightLeft -= pageHeight;
-
-        //     while (heightLeft >= 0) {
-        //         position = heightLeft - imgHeight;
-        //         doc.addPage();
-        //         doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        //         heightLeft -= pageHeight;
-        //     }
-        //     doc.save('file.pdf')
-
-        // });
         window.html2canvas = html2canvas;
         window.scrollTo(0, 0);
 
@@ -67,62 +101,71 @@ const ViewPDFModal = ({ show, handleClose, selectedQuestions, clearSelectedQuest
         const newdate = year + "/" + month + "/" + day;
 
         var childDivs = document.getElementById('questions').children
-        var doc = new jsPDF('p', 'mm');
+        var doc = new jsPDF('p', 'mm', undefined, undefined, true);
+
+        var skipNext = false
+
+        var pagesToRemove = [1]
 
         for (let i = 0; i < childDivs.length; i++) {
 
-            await html2canvas(document.getElementById(`question${i}`), {
+            const question = document.getElementById(`question${i}`)
+            await html2canvas(question, {
                 scale: 2
+                // eslint-disable-next-line no-loop-func
             }).then(function (canvas) {
-                var imgData = canvas.toDataURL('image/png');
+                doc.addPage();
+
+                var imgData = canvas.toDataURL('image/jpeg');
+
                 var imgWidth = 210;
                 var pageHeight = 295;
-                var imgHeight = canvas.height * imgWidth / canvas.width;
-                var heightLeft = imgHeight;
+
+                // var imgHeight = canvas.height * imgWidth / canvas.width;
+                var imgHeight = question.offsetHeight * 0.2645833333;
+                var heightLeftToPrint = imgHeight;
 
                 var position = 0;
+                doc.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+                heightLeftToPrint -= pageHeight;
 
-                doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                heightLeft -= pageHeight;
 
-                while (heightLeft >= 0) {
-                    position = heightLeft - imgHeight;
+                while (heightLeftToPrint > 0) {
+                    position = heightLeftToPrint - imgHeight;
                     doc.addPage();
-                    doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                    heightLeft -= pageHeight;
+                    doc.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight, undefined, 'SLOW');
+                    heightLeftToPrint -= pageHeight;
                 }
+
+
+                // check if next question fits
+                var spaceRemaining = heightLeftToPrint * -1
+                const nextQuestion = document.getElementById(`question${i + 1}`)
+                if ((nextQuestion?.offsetHeight * 0.2645833333) < spaceRemaining) {
+                    html2canvas(nextQuestion, {
+                        scale: 2
+                    }).then(function (canvas) {
+                        var imgData = canvas.toDataURL('image/jpeg');
+                        var imgWidth = 210;
+                        var imgHeight = nextQuestion.offsetHeight * 0.2645833333;
+                        doc.addImage(imgData, 'JPEG', 0, question.offsetHeight * 0.2645833333, imgWidth, imgHeight);
+                        skipNext = true
+                        i++
+                        pagesToRemove.push(i + 2)
+                    }
+                    )
+                }
+
 
             });
 
 
         }
+        console.log(pagesToRemove)
+        for (var i = pagesToRemove.length - 1; i >= 0; i--)
+            doc.deletePage(pagesToRemove[i])
         doc.save('file.pdf')
     }
-
-
-    // const saveQuestionsPdf = async () => {
-    //     window.html2canvas = html2canvas;
-    //     window.scrollTo(0, 0);
-
-    //     var dateObj = new Date();
-    //     var month = dateObj.getUTCMonth() + 1; //months from 1-12
-    //     var day = dateObj.getUTCDate();
-    //     var year = dateObj.getUTCFullYear();
-
-    //     const newdate = year + "/" + month + "/" + day;
-
-    //     await html2canvas(document.getElementById("questions"), {
-    //         scale: 3
-    //     }).then(function (canvas) {
-    //         let h = document.querySelector('#questions').offsetHeight;
-    //         let w = document.querySelector('#questions').offsetWidth;
-    //         var uri = canvas.toDataURL()
-    //         var doc = new jsPDF('p', 'px', [w, h]);
-    //         doc.addImage(uri, 'JPEG', 0, 0, w, h)
-    //         doc.save('Questions ' + newdate + ' - Topical Papers Generator.pdf');
-    //         setKey('answer')
-    //     });
-    // }
 
 
     const saveAnswersPdf = async () => {
@@ -182,14 +225,14 @@ const ViewPDFModal = ({ show, handleClose, selectedQuestions, clearSelectedQuest
                         transition={false}
                     >
                         <Tab eventKey="question" title="Question" style={{ backgroundColor: 'light-blue' }}>
-                            <Container className='p-5 w-100' style={{ wordWrap: 'break-word' }}>
+                            <Container className='p-5 w-100 d-flex justify-content-center' style={{ wordWrap: 'break-word' }}>
                                 <div id="questions" className='' style={{ width: '210mm', padding: '0 10px' }}>
                                     {selectedQuestions.map((question, index) => {
                                         return (
-                                            <div id={`question${index}`} style={{ minHeight: '297mm', maxHeight: 'max-content' }}>
+                                            // <div id={`question${index}`} style={{ minHeight: '297mm', maxHeight: 'max-content', borderBottom: '1px solid gray' }}>
+                                            <div id={`question${index}`} style={{ borderBottom: '1px solid gray' }}>
                                                 <b>Question {index + 1}</b>
                                                 <div dangerouslySetInnerHTML={{ __html: question.question }} />
-                                                <hr />
                                             </div>
                                         )
                                     })}
