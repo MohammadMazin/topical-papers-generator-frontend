@@ -161,9 +161,20 @@ const ViewPDFModal = ({ show, handleClose, selectedQuestions, clearSelectedQuest
 
 
         }
-        console.log(pagesToRemove)
         for (var i = pagesToRemove.length - 1; i >= 0; i--)
             doc.deletePage(pagesToRemove[i])
+
+        const pages = doc.internal.getNumberOfPages();
+        const pageWidth = doc.internal.pageSize.width;  //Optional
+        const pageHeight = doc.internal.pageSize.height;  //Optional
+        doc.setFontSize(12);  //Optional
+        for (let j = 1; j < pages + 1; j++) {
+            let horizontalPos = pageWidth / 2;  //Can be fixed number
+            let verticalPos = pageHeight - 10;  //Can be fixed number
+            doc.setPage(j);
+            doc.text(`${j} of ${pages}`, horizontalPos, verticalPos, { align: 'center' });
+        }
+
         doc.save('file.pdf')
     }
 
@@ -230,7 +241,7 @@ const ViewPDFModal = ({ show, handleClose, selectedQuestions, clearSelectedQuest
                                     {selectedQuestions.map((question, index) => {
                                         return (
                                             // <div id={`question${index}`} style={{ minHeight: '297mm', maxHeight: 'max-content', borderBottom: '1px solid gray' }}>
-                                            <div id={`question${index}`} style={{ borderBottom: '1px solid gray' }}>
+                                            <div id={`question${index}`} style={{ borderBottom: '1px solid gray', padding: '2rem' }}>
                                                 <b>Question {index + 1}</b>
                                                 <div dangerouslySetInnerHTML={{ __html: question.question }} />
                                             </div>
