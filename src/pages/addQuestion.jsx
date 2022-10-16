@@ -339,7 +339,8 @@ const AddQuestion = () => {
                                 <div className='w-50 p-2' dangerouslySetInnerHTML={{ __html: answer }} style={{ backgroundColor: 'white' }} />
                             </Container>
                             <hr />
-                            <Button className='d-flex ms-auto px-5 mt-4' onClick={handleSubmit} disabled={loading}>Add Question</Button>
+                            {/* <Button className='d-flex ms-auto px-5 mt-4' onClick={handleSubmit} disabled={loading}>Add Question</Button> */}
+                            <Button className='d-flex ms-auto px-5 mt-4' onClick={handleSubmit}>Add Question</Button>
                         </Accordion.Body>
                     </Accordion.Item>
                 </Accordion>
