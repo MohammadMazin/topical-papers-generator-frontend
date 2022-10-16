@@ -44,6 +44,10 @@ body{
   }
 }
 
+table {
+  table-layout: fixed;
+}
+
 /* Login */
 
 @media only screen and (max-width: 820px) {
