@@ -107,9 +107,6 @@ const ViewPDFModal = ({ show, handleClose, selectedQuestions, clearSelectedQuest
         var childDivs = document.getElementById('questions').children
         var doc = new jsPDF('p', 'mm', undefined, undefined, true);
 
-
-
-        var pagesToRemove = [1]
         let questionAdded = []
 
         var skipNext = false
@@ -157,11 +154,15 @@ const ViewPDFModal = ({ show, handleClose, selectedQuestions, clearSelectedQuest
                         scale: 2
                     }).then(function (canvas) {
                         var imgData = canvas.toDataURL('image/jpeg');
-                        var imgWidth = 210;
-                        var imgHeight = pxToMm(nextQuestion.offsetHeight);
-                        // doc.addImage(imgData, 'JPEG', 0, pxToMm(question.offsetHeight), imgWidth, imgHeight);
-                        console.log(pageHeight - spaceRemaining)
-                        doc.addImage(imgData, 'JPEG', 0, pageHeight - spaceRemaining, imgWidth, imgHeight);
+                        // var imgWidthQ = 210;
+                        var imgWidthQ = pxToMm(nextQuestion.offsetWidth);
+                        var imgHeightQ = pxToMm(nextQuestion.offsetHeight);
+                        // doc.addImage(imgData, 'JPEG', 0, pxToMm(question.offsetHeight), imgWidthQ, imgHeightQ);
+                        console.log(pageHeight - spaceRemaining, i)
+                        console.log(nextQuestion)
+                        doc.addImage(imgData, 'JPEG', 0, pageHeight - spaceRemaining, imgWidthQ, imgHeightQ);
+
+
                     }
                     ).then(skipNext = true)
                 }
@@ -184,6 +185,7 @@ const ViewPDFModal = ({ show, handleClose, selectedQuestions, clearSelectedQuest
 
         doc.save('Questions.pdf')
         setKey('answer')
+
     }
 
 
@@ -300,8 +302,10 @@ const ViewPDFModal = ({ show, handleClose, selectedQuestions, clearSelectedQuest
             doc.text(`${j} of ${pages}`, horizontalPos, verticalPos, { align: 'center' });
         }
         doc.save('Answers.pdf')
+
         clearSelectedQuestions()
         handleClose()
+
     }
 
 
@@ -339,6 +343,21 @@ const ViewPDFModal = ({ show, handleClose, selectedQuestions, clearSelectedQuest
                             <Container className='p-5 w-100 d-flex justify-content-center' style={{ wordWrap: 'break-word' }}>
                                 <div id="questions" style={{ width: '210mm', padding: '0 10px' }}>
                                     {selectedQuestions.map((question, index) => {
+
+                                        if (index + 1 === selectedQuestions.length)
+                                            return (
+                                                // <div id={`question${index}`} style={{ minHeight: '297mm', maxHeight: 'max-content', borderBottom: '1px solid gray' }}>
+                                                <>
+                                                    <div id={`question${index}`} style={{ textAlign: 'left' }}>
+                                                        <b>{index + 1})</b>
+                                                        <div dangerouslySetInnerHTML={{ __html: question.question }} />
+                                                    </div>
+                                                    <div id={`question${index + 1}`} style={{ textAlign: 'left' }}>
+                                                        <hr />
+                                                    </div>
+                                                </>
+                                            )
+
                                         return (
                                             // <div id={`question${index}`} style={{ minHeight: '297mm', maxHeight: 'max-content', borderBottom: '1px solid gray' }}>
                                             <div id={`question${index}`} style={{ textAlign: 'left' }}>
@@ -353,6 +372,21 @@ const ViewPDFModal = ({ show, handleClose, selectedQuestions, clearSelectedQuest
                         <Tab eventKey="answer" title="Answer">
                             <div id="answers" style={{ minWidth: '210mm', width: 'max-content', aspectRatio: '1/1.414' }}>
                                 {selectedQuestions.map((question, index) => {
+
+                                    if (index + 1 === selectedQuestions.length)
+                                        return (
+                                            // <div id={`question${index}`} style={{ minHeight: '297mm', maxHeight: 'max-content', borderBottom: '1px solid gray' }}>
+                                            <>
+                                                <div id={`answer${index}`} style={{ textAlign: 'left' }}>
+                                                    <b>{index + 1})</b>
+                                                    <div dangerouslySetInnerHTML={{ __html: question.answer }} />
+                                                </div>
+                                                <div id={`answer${index + 1}`} style={{ textAlign: 'left' }}>
+                                                    <hr />
+                                                </div>
+                                            </>
+                                        )
+
                                     return (
                                         <div id={`answer${index}`} style={{ textAlign: 'left' }} >
                                             <b>Question {index + 1}</b>
