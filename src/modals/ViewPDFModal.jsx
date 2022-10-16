@@ -162,6 +162,7 @@ const ViewPDFModal = ({ show, handleClose, selectedQuestions, clearSelectedQuest
                         console.log(nextQuestion)
                         doc.addImage(imgData, 'JPEG', 0, pageHeight - spaceRemaining, imgWidthQ, imgHeightQ);
 
+
                     }
                     ).then(skipNext = true)
                 }
@@ -183,7 +184,8 @@ const ViewPDFModal = ({ show, handleClose, selectedQuestions, clearSelectedQuest
         }
 
         doc.save('Questions.pdf')
-        // setKey('answer')
+        setKey('answer')
+
     }
 
 
@@ -300,8 +302,10 @@ const ViewPDFModal = ({ show, handleClose, selectedQuestions, clearSelectedQuest
             doc.text(`${j} of ${pages}`, horizontalPos, verticalPos, { align: 'center' });
         }
         doc.save('Answers.pdf')
-        // clearSelectedQuestions()
-        // handleClose()
+
+        clearSelectedQuestions()
+        handleClose()
+
     }
 
 
