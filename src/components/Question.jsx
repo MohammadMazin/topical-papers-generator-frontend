@@ -30,7 +30,12 @@ const Question = ({ data, setSelectedQuestion, handleAddQuestion, handleRemoveQu
                                     <Badge pill>{boardId?.name} - {levelId?.name}</Badge>
                                     <Badge pill>{subjectId?.name}</Badge>
                                 </Container>
-                                <div dangerouslySetInnerHTML={{ __html: description }} />
+                                <Container className='d-flex gap-3 p-0' style={{ flexWrap: 'war' }}>
+                                    <b>Tags:</b>
+                                    {description.map((desc, index) => {
+                                        return <p>{desc}</p>
+                                    })}
+                                </Container>
                             </Container>
                         </Accordion.Header>
                         <Accordion.Body>
@@ -81,7 +86,13 @@ const Question = ({ data, setSelectedQuestion, handleAddQuestion, handleRemoveQu
                     <Badge pill>{boardId?.name} - {levelId?.name}</Badge>
                     <Badge pill>{subjectId?.name}</Badge>
                 </Container>
-                <div dangerouslySetInnerHTML={{ __html: description }} />
+                <Container className='d-flex gap-3 p-0' style={{ flexWrap: 'war' }}>
+                    <b>Tags:</b>
+                    {description.map((desc, index) => {
+                        return <p>{desc}</p>
+                    })}
+                </Container>
+
             </Container>
             {!selected ?
                 <Button className='py-2' style={{ borderRadius: '0  0 5px 5px' }} onClick={handleAddQuestion}>Add Question</Button>

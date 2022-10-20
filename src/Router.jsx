@@ -1,8 +1,10 @@
+import { useContext, useEffect } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { Route, Routes, useNavigate } from 'react-router-dom'
 import Login from './pages/login'
 import Register from './pages/register'
 import Dashboard from './pages/dashboard'
+import SavedPapers from './pages/savedPapers'
 import DashboardAdmin from './pages/dashboardAdmin'
 import LoginAdmin from './pages/loginAdmin'
 import AddQuestion from './pages/addQuestion'
@@ -14,10 +16,10 @@ import AddSubject from './pages/addSubject'
 import AddTopic from './pages/addTopic'
 import AddAdmin from './pages/addAdmin'
 import Users from './pages/users'
+import Profile from './pages/profile'
 import EditQuestion from './pages/editQuestion'
 import DeleteQuestion from './pages/deleteQuestion'
 import VerifyUser from './pages/verifyUser'
-import { useContext, useEffect } from 'react'
 import UserContext from './globals/user-data'
 import NavigationBar from './components/Navigationbar'
 import { Button, Container } from 'react-bootstrap'
@@ -65,6 +67,7 @@ function Router() {
                         userState.isAuth && (userState.data?.isAdmin || userState.isAdmin) ?
                             <>
                                 <Route path="/" element={<DashboardAdmin />} />
+                                <Route path="/profile" element={<Profile />} />
                                 <Route path="/addQuestion" element={<AddQuestion />} />
                                 <Route path="/addBoard" element={<AddBoard />} />
                                 <Route path="/addLevel" element={<AddLevel />} />
@@ -102,6 +105,9 @@ function Router() {
                     userState.isAuth ?
                         <>
                             <Route path="/" element={<Dashboard />} />
+                            <Route path="/profile" element={<Profile />} />
+                            <Route path="/savedPapers" element={<SavedPapers />} />
+
                         </> :
                         <>
                             <Route path="/" element={<Login />} />

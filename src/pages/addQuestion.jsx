@@ -23,11 +23,15 @@ const AddQuestion = () => {
     const [marks, setMarks] = useState(null)
     const [question, setQuestion] = useState('')
     const [answer, setAnswer] = useState('')
+    const [year, setYear] = useState('')
+    const [month, setMonth] = useState('')
+    const [variant, setVariant] = useState('')
     const [questionTypeId, setQuestionTypeId] = useState(null)
     const [questionTypes, setQuestionTypes] = useState([])
 
     const [questions, setQuestions] = useState([])
     const [selectedQuestion, setSelectedQuestion] = useState([])
+
 
     const [boards, setBoards] = useState([])
     const [subjects, setSubjects] = useState([])
@@ -51,8 +55,9 @@ const AddQuestion = () => {
 
         const fetchQuestions = async () => {
             const res = await getAllQuestions()
-            if (res.success)
+            if (res.success) {
                 setQuestions(res.data)
+            }
             else
                 toast.error('Failed to fetch data')
         }
@@ -95,11 +100,14 @@ const AddQuestion = () => {
 
         const data = {
             title,
-            description,
+            description: description.split(','),
             marks,
             question,
             answer,
-            courseId,
+            year,
+            month,
+            variant,
+            courseId: courseId.split(','),
             boardId,
             levelId,
             subjectId,
@@ -210,6 +218,33 @@ const AddQuestion = () => {
                                 aria-label="Title"
                                 className='w-25'
                                 onChange={(e) => setMarks(parseInt(e.target.value))}
+                                style={{ minWidth: '200px' }}
+                            />
+                            <Form.Label>Year</Form.Label>
+                            <Form.Control
+                                type="number"
+                                placeholder=""
+                                aria-label="Title"
+                                className='w-25'
+                                onChange={(e) => setYear(parseInt(e.target.value))}
+                                style={{ minWidth: '200px' }}
+                            />
+                            <Form.Label>Month</Form.Label>
+                            <Form.Control
+                                type="text"
+                                placeholder="Ex: May"
+                                aria-label="Title"
+                                className='w-25'
+                                onChange={(e) => setMonth(e.target.value)}
+                                style={{ minWidth: '200px' }}
+                            />
+                            <Form.Label>Variant</Form.Label>
+                            <Form.Control
+                                type="number"
+                                placeholder=""
+                                aria-label="Title"
+                                className='w-25'
+                                onChange={(e) => setVariant(parseInt(e.target.value))}
                                 style={{ minWidth: '200px' }}
                             />
 
@@ -349,13 +384,16 @@ const AddQuestion = () => {
             </Container>
             <div className='p-0 bg-white mt-4' style={{ width: '90vw', marginLeft: 'auto', marginRight: 'auto' }}>
 
-                <Table striped bordered hover>
+                <Table striped bordered hover responsive>
                     <thead>
                         <tr>
                             <th>#</th>
                             <th>Title</th>
                             <th>Description</th>
                             <th>Marks</th>
+                            <th>Year</th>
+                            <th>Month</th>
+                            <th>Variant</th>
                             <th>Detail</th>
                             <th>Course ID</th>
                             <th>Board</th>
@@ -369,17 +407,36 @@ const AddQuestion = () => {
                     </thead>
                     <tbody>
                         {questions.map((q, index) => {
-                            const { title, description, marks, courseId, topicId, questionTypeId, boardId, levelId, subjectId, paid, _id } = q
+                            const { title, description, marks, year, month, variant, courseId, topicId, questionTypeId, boardId, levelId, subjectId, paid, _id } = q
                             return (
                                 <tr key={_id}>
                                     <td>{index + 1}</td>
                                     <td>{title}</td>
-                                    <td>{description}</td>
+                                    <td>
+                                        <Form.Select>
+                                            {description.map((desc, index) => {
+                                                return (
+                                                    <option>{desc}</option>
+                                                )
+                                            })}
+                                        </Form.Select>
+                                    </td>
                                     <td>{marks}</td>
+                                    <td>{year}</td>
+                                    <td>{month}</td>
+                                    <td>{variant}</td>
                                     <td>
                                         <span onClick={() => handleShowQuestion(q)} style={{ color: '#004cff', cursor: 'pointer' }}>View Detail</span>
                                     </td>
-                                    <td>{courseId}</td>
+                                    <td>
+                                        <Form.Select>
+                                            {courseId.map((id, index) => {
+                                                return (
+                                                    <option>{id}</option>
+                                                )
+                                            })}
+                                        </Form.Select>
+                                    </td>
                                     <td>{boardId?.name}</td>
                                     <td>{levelId?.name}</td>
                                     <td>{subjectId?.name}</td>
