@@ -25,7 +25,11 @@ export const getUnverifiedUsers = async() => {
 export const setUserPaidStatus = async(data) => {
     const response = await axios.post(`${baseUrl}setPaid`, data)
     return response.data
+}
 
+export const changePassword = async(data) => {
+    const response = await axios.post(`${baseUrl}changePassword`, data)
+    return response.data
 }
 
 export const addUser = async(data) => {

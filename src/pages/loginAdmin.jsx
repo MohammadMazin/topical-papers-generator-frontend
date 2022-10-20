@@ -28,7 +28,7 @@ export default function LoginAdmin() {
       toast.success('LoginAdmin Successful')
       navigate('/')
     } else
-      toast.error('Failed to Login!')
+      toast.error(res.message)
     setLoading(false)
   }
 

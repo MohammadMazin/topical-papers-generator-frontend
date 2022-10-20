@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Button from 'react-bootstrap/Button'
 import Container from 'react-bootstrap/Container'
 import Form from 'react-bootstrap/Form'
@@ -16,9 +16,11 @@ import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 import ViewPDFModal from '../modals/ViewPDFModal'
 import { getTopicsOfSubject } from '../services/topics'
+import Multiselect from 'multiselect-react-dropdown';
 
 import { PDFDownloadLink } from '@react-pdf/renderer'
 import QuestionPDF from '../components/QuestionPDF'
+import { getQuestionTypes } from '../services/questionTypes'
 
 function getWindowDimensions() {
     const { innerWidth: width, } = window;
@@ -26,6 +28,8 @@ function getWindowDimensions() {
 }
 
 const Dashboard = () => {
+
+    const dropdownRef = useRef()
 
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const [search, setSearch] = useState("")
@@ -35,12 +39,15 @@ const Dashboard = () => {
     const [boards, setBoards] = useState([])
     const [levels, setLevels] = useState([])
     const [topics, setTopics] = useState([])
+    const [questionTypes, setQuestionTypes] = useState([])
 
     const [boardId, setBoardId] = useState(null)
     const [courseId, setCourseId] = useState(null)
     const [levelId, setLevelId] = useState(null)
     const [subjectId, setSubjectId] = useState(null)
-    const [topicId, setTopicId] = useState(null)
+    const [topicId, setTopicId] = useState([])
+    const [questionTypeId, setQuestionTypeId] = useState(null)
+    const [tags, setTags] = useState(null)
 
     const [filterOn, setFilterOn] = useState(false)
 
@@ -75,6 +82,13 @@ const Dashboard = () => {
                 else
                     toast.error(resSubjects.message)
             }
+
+            const resQType = await getQuestionTypes()
+            if (resQType.success) {
+                setQuestionTypes(resQType.data)
+            }
+            else
+                toast.error(resQType.message)
         }
 
         function handleResize() {
@@ -87,7 +101,6 @@ const Dashboard = () => {
     }, [])
 
     // TODO: Test with levels of other boards - add data into other boards
-
     const handleGetLevelsOfBoard = async (id) => {
         if (id === 'null') {
             setLevels([])
@@ -113,11 +126,15 @@ const Dashboard = () => {
             boardId: boardId === 'null' ? null : boardId,
             levelId: levelId === 'null' ? null : levelId,
             subjectId: subjectId === 'null' ? null : subjectId,
-            topicId: topicId === 'null' ? null : topicId,
-            courseId: courseId === '' ? null : courseId,
+            topicId: topicId.length === 0 ? null : topicId.map(topic => topic._id),
+            questionTypeId: questionTypeId === 'null' ? null : questionTypeId,
+            courseId: courseId === '' ? null : courseId?.split(','),
+            description: tags === '' ? null : tags?.split(','),
             filterOn,
             userId: localStorage.getItem("_id")
         }
+
+        console.log(data)
 
         const res = await searchQuestions(data)
         if (res.success) {
@@ -163,10 +180,14 @@ const Dashboard = () => {
         setSubjectId(id)
 
         const res = await getTopicsOfSubject({ subjectId: id })
-        if (res.success)
+        if (res.success) {
             setTopics(res.data)
+            dropdownRef.current.resetSelectedValues()
+            setTopicId([])
+        }
         else
             toast.error('Failed to fetch topics of subject')
+
     }
 
     const handleCloseModal = () => setShow(false)
@@ -179,6 +200,20 @@ const Dashboard = () => {
                 return question
             })
             return data
+        })
+    }
+
+    const handleSelectTopics = (selectedItem, selectedList) => {
+        setTopicId((prevTopicIds) => {
+            return [
+                ...selectedItem
+            ]
+        })
+    }
+    const handleUnselectTopics = (selectedItem, selectedList) => {
+        setTopicId((prevTopicIds) => {
+            return prevTopicIds.filter(topicId => topicId._id !== selectedList._id)
+
         })
     }
 
@@ -243,27 +278,65 @@ const Dashboard = () => {
 
                                     <Container className='p-0'>
                                         <Form.Label>Select Topic</Form.Label>
-                                        <Form.Select aria-label="Default select example" disabled={topics.length === 0} onChange={(e) => setTopicId(e.target.value)}>
+                                        {/* <Form.Select aria-label="Default select example" disabled={topics.length === 0} onChange={(e) => setTopicId(e.target.value)}>
                                             <option value={'null'}>All Topics</option>
                                             {topics.map((topic, index) => {
                                                 const { _id, name } = topic
                                                 return <option key={_id} value={_id}>{name}</option>
                                             })
                                             }
+                                        </Form.Select> */}
+                                        <Multiselect
+                                            disable={topics.length === 0}
+                                            ref={dropdownRef}
+                                            options={topics}
+                                            onSelect={handleSelectTopics}
+                                            onRemove={handleUnselectTopics}
+                                            displayValue="name"
+                                        />
+                                    </Container>
+
+                                </Container>
+                                <Container className='d-flex justify-space-around p-0 gap-5 mt-3'>
+                                    <Container className='p-0'>
+                                        <Form.Label>Select Question Type</Form.Label>
+                                        <Form.Select aria-label="Default select example" onChange={(e) => setQuestionTypeId(e.target.value)}>
+                                            <option value={'null'}>All Question Types</option>
+                                            {questionTypes.map((questionType, index) => {
+                                                const { _id, name } = questionType
+                                                return <option key={_id} value={_id}>{name}</option>
+                                            })
+                                            }
                                         </Form.Select>
                                     </Container>
+
+                                    <Container>
+                                        <Form.Label>Course ID</Form.Label>
+                                        <Form.Control
+                                            type="search"
+                                            placeholder="Separate Course ID by Comma- Example:(2210,2541)"
+                                            className="me-2"
+                                            aria-label="Search"
+                                            onChange={(e) => setCourseId(e.target.value)} />
+
+                                    </Container>
                                 </Container>
-                                <Form.Label>Course ID</Form.Label>
+
+                                <Form.Label>Tags</Form.Label>
                                 <Form.Control
                                     type="search"
-                                    placeholder="Type Course ID"
+                                    placeholder="Separate Tags by Comma- Example:(output,laser printer,computer)"
                                     className="me-2"
                                     aria-label="Search"
-                                    onChange={(e) => setCourseId(e.target.value)}
-                                />
+                                    onChange={(e) => setTags(e.target.value)} />
                                 <Container>
 
                                 </Container>
+
+                                <Container className='w-100 p-0 d-flex'>
+                                    <Button variant="primary" className='mt-3 ms-auto' onClick={handleSearch}>Search Using Filters</Button>
+                                </Container>
+
                             </Accordion.Body>
                         </Accordion.Item>
                     </Accordion>

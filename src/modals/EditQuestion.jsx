@@ -22,12 +22,14 @@ const EditQuestion = ({
     setTopics
 }) => {
 
-
     const questionId = data._id
     const [title, setTitle] = useState(data.title)
     const [description, setDescription] = useState(data.description)
     const [courseId, setCourseId] = useState(data.courseId)
     const [marks, setMarks] = useState(data.marks)
+    const [year, setYear] = useState(data.year)
+    const [month, setMonth] = useState(data.month)
+    const [variant, setVariant] = useState(data.variant)
     const [boardId, setBoardId] = useState(data.boardId._id)
     const [subjectId, setSubjectId] = useState(data.subjectId._id)
     const [questionTypeId, setQuestionTypeId] = useState(data.questionTypeId._id)
@@ -75,6 +77,9 @@ const EditQuestion = ({
             marks,
             question,
             answer,
+            year,
+            month,
+            variant,
             courseId,
             boardId,
             levelId,
@@ -144,6 +149,36 @@ const EditQuestion = ({
                         aria-label="Title"
                         className='w-25'
                         onChange={(e) => setMarks(parseInt(e.target.value))}
+                    />
+                    <Form.Label>Year</Form.Label>
+                    <Form.Control
+                        type="number"
+                        placeholder=""
+                        value={year}
+                        aria-label="Title"
+                        className='w-25'
+                        onChange={(e) => setYear(parseInt(e.target.value))}
+                        style={{ minWidth: '200px' }}
+                    />
+                    <Form.Label>Month</Form.Label>
+                    <Form.Control
+                        type="text"
+                        placeholder="Ex: May"
+                        value={month}
+                        aria-label="Title"
+                        className='w-25'
+                        onChange={(e) => setMonth(e.target.value)}
+                        style={{ minWidth: '200px' }}
+                    />
+                    <Form.Label>Variant</Form.Label>
+                    <Form.Control
+                        type="number"
+                        placeholder=""
+                        value={variant}
+                        aria-label="Title"
+                        className='w-25'
+                        onChange={(e) => setVariant(parseInt(e.target.value))}
+                        style={{ minWidth: '200px' }}
                     />
 
                     <Form.Label>Question Tier</Form.Label>
@@ -273,13 +308,11 @@ const EditQuestion = ({
 
                         <div className='w-50 p-2' dangerouslySetInnerHTML={{ __html: answer }} style={{ backgroundColor: 'white' }} />
                     </Container>
-                    <hr />
-                    <Button className='d-flex ms-auto px-5 mt-4' onClick={handleSubmit} disabled={loading}>Edit Question</Button>
-
                 </Container>
 
             </Modal.Body>
             <Modal.Footer>
+                <Button className='d-flex ms-auto px-5' onClick={handleSubmit} disabled={loading}>Edit Question</Button>
                 <Button variant="danger" onClick={handleClose}>
                     Close
                 </Button>

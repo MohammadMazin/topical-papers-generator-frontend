@@ -18,6 +18,12 @@ export default function Login() {
 
   const handleLogin = async e => {
     e.preventDefault()
+
+    if (email === 'guest@gmail.com' && password === "guest") {
+      toast.error('User Not Found!')
+      return
+    }
+
     setLoading(true)
     const res = await login({ email, password })
     if (res.success) {
@@ -31,6 +37,7 @@ export default function Login() {
       toast.error(res.message)
     setLoading(false)
   }
+
   const handleGuestLogin = async e => {
     e.preventDefault()
     setLoading(true)
@@ -39,6 +46,7 @@ export default function Login() {
       localStorage.setItem('token', res.token)
       localStorage.setItem('name', res.data.name)
       localStorage.setItem('_id', res.data._id)
+      localStorage.setItem('isGuest', res.data._id)
       setUserState({ isAuth: true, token: res.token, data: res.data })
       toast.success('Login Successful')
       navigate('/')
@@ -77,7 +85,6 @@ export default function Login() {
             </Button>
             <hr />
             <Container className="d-flex w-75 gap-4 justify-content-around mt-4">
-              {/* TODO: Handle Guest User */}
               <span style={{ textAlign: 'center', cursor: 'pointer', color: '#004de7' }} onClick={handleGuestLogin}>Try Us Out! Login as Guest</span >
               <Link to="/register" style={{ color: 'white' }}>
                 <Button variant="outline-primary">

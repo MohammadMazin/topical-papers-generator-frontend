@@ -20,10 +20,13 @@ export default function NavigationBar() {
     useEffect(() => {
         setUsername(localStorage.getItem("name"))
     }, [])
+
     const handleLogout = () => {
         localStorage.removeItem("token")
         localStorage.removeItem("name")
         localStorage.removeItem("_id")
+        if (localStorage.getItem("isGuest"))
+            localStorage.removeItem("isGuest")
         if (localStorage.getItem("isAdmin"))
             localStorage.removeItem("isAdmin")
         setUserState({ isAuth: false, token: null, isAdmin: false })
@@ -34,32 +37,36 @@ export default function NavigationBar() {
     return (
         <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark" className='navgradient'>
             <Container>
-                <Navbar.Brand href="#home">Topical Papers Generator</Navbar.Brand>
+                <Navbar.Brand href="/"><b>TOPICAL PAPERS GENERATOR</b></Navbar.Brand>
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
 
                 <Navbar.Collapse id="responsive-navbar-nav ">
                     <Nav className="me-auto d-flex justify-content-between w-100 px-4">
                         <Container className='p-0 d-flex gap-4 align-items-center'>
+
                             <Link style={{ color: 'white', textDecoration: 'none', }} to="/">
                                 <span style={{ color: 'white', textDecoration: 'none', }}>Home</span>
                             </Link>
+                            {
+                                !(localStorage.getItem('isGuest')) &&
+
+                                <Link style={{ color: 'white', textDecoration: 'none', }} to="/profile">
+                                    <span style={{ color: 'white', textDecoration: 'none', }}>Profile</span>
+                                </Link>
+                            }
+
+                            {
+                                !(localStorage.getItem('isAdmin') || localStorage.getItem('isGuest')) &&
+                                <Link style={{ color: 'white', textDecoration: 'none', }} to="/savedPapers">
+                                    <span style={{ color: 'white', textDecoration: 'none', }}>Saved Papers</span>
+                                </Link>
+                            }
+
                             {localStorage.getItem('isAdmin') && <Link style={{ color: 'white', textDecoration: 'none', }} to="/users">
                                 <span style={{ color: 'white', textDecoration: 'none', }}>Users</span>
                             </Link>}
                         </Container>
                         <p className='mb-auto mt-auto' style={{ color: 'white' }}>Logged in as: {username}</p>
-                        {/* <Nav.Link href="#pricing">Pricing</Nav.Link>
-                        <NavDropdown title="Dropdown" id="collasible-nav-dropdown">
-                            <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-                            <NavDropdown.Item href="#action/3.2">
-                                Another action
-                            </NavDropdown.Item>
-                            <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-                            <NavDropdown.Divider />
-                            <NavDropdown.Item href="#action/3.4">
-                                Separated link
-                            </NavDropdown.Item>
-                        </NavDropdown> */}
                     </Nav>
                     <Button variant="danger" onClick={handleLogout}>Logout</Button>
                 </Navbar.Collapse>
