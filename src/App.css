@@ -5,6 +5,10 @@ body{
   background-attachment: fixed;
 }
 
+*{
+  box-sizing: border-box;
+}
+
 .App {
   text-align: center;
 }

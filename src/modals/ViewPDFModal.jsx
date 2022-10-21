@@ -9,6 +9,7 @@ import html2canvas from 'html2canvas';
 import Form from 'react-bootstrap/Form';
 import { toast } from 'react-toastify';
 import { addSavedPaper } from '../services/savedPapers';
+import ProgressBar from 'react-bootstrap/ProgressBar';
 
 const ViewPDFModal = ({ show, handleClose, selectedQuestions, clearSelectedQuestions, fromSaved = false, title }) => {
 
@@ -29,6 +30,8 @@ const ViewPDFModal = ({ show, handleClose, selectedQuestions, clearSelectedQuest
     const [saved, setSaved] = useState(false)
     const [name, setName] = useState(fromSaved ? title : '')
     const [loading, setLoading] = useState(false)
+
+    const [rendered, setRendered] = useState(0)
 
     useEffect(() => {
         if (!selectedFile) {
@@ -90,6 +93,9 @@ const ViewPDFModal = ({ show, handleClose, selectedQuestions, clearSelectedQuest
             })
         }
 
+        let renderedCount = 0
+        setRendered(0)
+
         for (let i = 0; i < childDivs.length; i++) {
 
             if (skipNext) {
@@ -103,8 +109,8 @@ const ViewPDFModal = ({ show, handleClose, selectedQuestions, clearSelectedQuest
                 scale: scale
                 // eslint-disable-next-line no-loop-func
             }).then(function (canvas) {
-                doc.addPage();
-
+                if (!question.classList.contains('toHide'))
+                    doc.addPage();
                 var imgData = canvas.toDataURL('image/jpeg');
                 var imgWidth = 210;
                 var pageHeight = 295;
@@ -117,6 +123,8 @@ const ViewPDFModal = ({ show, handleClose, selectedQuestions, clearSelectedQuest
                 heightLeftToPrint -= pageHeight;
                 questionAdded.push(i)
 
+                setRendered(prevRendered => (++renderedCount / childDivs.length) * 100)
+
                 // If question does not fit in single page
                 while (heightLeftToPrint > 0) {
                     position = heightLeftToPrint - imgHeight;
@@ -128,14 +136,15 @@ const ViewPDFModal = ({ show, handleClose, selectedQuestions, clearSelectedQuest
                 // check if next question fits in available free space of page
                 var spaceRemaining = heightLeftToPrint * -1
                 const nextQuestion = document.getElementById(`question${i + 1}`)
-                if ((pxToMm(nextQuestion?.offsetHeight)) < spaceRemaining) {
+                if ((pxToMm(nextQuestion?.offsetHeight)) < (spaceRemaining - 20) && !nextQuestion.classList.contains('toHide')) {
                     html2canvas(nextQuestion, {
                         scale: scale
                     }).then(function (canvas) {
                         var imgData = canvas.toDataURL('image/jpeg');
                         var imgWidthQ = pxToMm(nextQuestion.offsetWidth);
                         var imgHeightQ = pxToMm(nextQuestion.offsetHeight);
-                        doc.addImage(imgData, 'JPEG', 0, pageHeight - spaceRemaining, imgWidthQ, imgHeightQ, undefined, 'FAST');
+                        doc.addImage(imgData, 'JPEG', 0, pageHeight - (spaceRemaining - 20), imgWidthQ, imgHeightQ, undefined, 'FAST');
+                        setRendered(prevRendered => (++renderedCount / childDivs.length) * 100)
                     }
                     ).then(skipNext = true)
                 }
@@ -172,6 +181,8 @@ const ViewPDFModal = ({ show, handleClose, selectedQuestions, clearSelectedQuest
         var skipNext = false
 
         let questionAdded = []
+        let renderedCount = 0
+        setRendered(0)
 
         for (let i = 0; i < childDivs.length; i++) {
 
@@ -200,6 +211,9 @@ const ViewPDFModal = ({ show, handleClose, selectedQuestions, clearSelectedQuest
                 heightLeftToPrint -= pageHeight;
                 questionAdded.push(i)
 
+                setRendered(prevRendered => (++renderedCount / childDivs.length) * 100)
+
+
                 // If answer does not fit in single page
                 while (heightLeftToPrint > 0) {
                     position = heightLeftToPrint - imgHeight;
@@ -210,15 +224,17 @@ const ViewPDFModal = ({ show, handleClose, selectedQuestions, clearSelectedQuest
 
                 // check if next answer fits in available free space of page
                 var spaceRemaining = heightLeftToPrint * -1
-                const nextQuestion = document.getElementById(`answer${i + 1}`)
-                if ((pxToMm(nextQuestion?.offsetHeight)) < spaceRemaining) {
-                    html2canvas(nextQuestion, {
+                const nextAnswer = document.getElementById(`answer${i + 1}`)
+                if ((pxToMm(nextAnswer?.offsetHeight + 10)) < spaceRemaining) {
+                    html2canvas(nextAnswer, {
                         scale: 2
                     }).then(function (canvas) {
                         var imgData = canvas.toDataURL('image/jpeg');
                         var imgWidth = 210;
-                        var imgHeight = pxToMm(nextQuestion.offsetHeight);
+                        var imgHeight = pxToMm(nextAnswer.offsetHeight);
                         doc.addImage(imgData, 'JPEG', 0, pageHeight - spaceRemaining, imgWidth, imgHeight, undefined, 'FAST');
+                        setRendered(prevRendered => (++renderedCount / childDivs.length) * 100)
+
                     }
                     ).then(skipNext = true)
                 }
@@ -290,7 +306,7 @@ const ViewPDFModal = ({ show, handleClose, selectedQuestions, clearSelectedQuest
                     {
                         !localStorage.getItem("isGuest") &&
                         <>
-                            <Container className='d-flex p-0 mt-3'>
+                            <Container className='d-flex p-0 mt-3 w-100'>
                                 <Form.Control
                                     className='p-0'
                                     onChange={(e) => setName(e.target.value)}
@@ -298,7 +314,7 @@ const ViewPDFModal = ({ show, handleClose, selectedQuestions, clearSelectedQuest
                                     disabled={fromSaved}
                                     type="text"
                                     placeholder="Enter Paper Title"
-                                    style={{ border: 'none', flex: 8, borderRadius: 0, borderBottom: '1px solid gray ', fontSize: '2rem' }}
+                                    style={{ border: 'none', flex: 9, borderRadius: 0, borderBottom: '1px solid gray ', fontSize: '2rem' }}
                                 />
                                 <Button style={{ flex: 1, height: 'max-content', margin: 'auto 0 auto 1rem' }} disabled={saved || loading || fromSaved} onClick={handleSavePaper}>Save Paper</Button>
                             </Container>
@@ -314,76 +330,73 @@ const ViewPDFModal = ({ show, handleClose, selectedQuestions, clearSelectedQuest
                         activeKey={key}
                         onSelect={(k) => setKey(k)}
                         className="mb-3"
-                        transition={false}
                     >
                         <Tab eventKey="question" title="Question" style={{ backgroundColor: 'light-blue' }}>
                             <Container className='p-5 w-100 d-flex flex-column align-items-center' style={{ wordWrap: 'break-word' }}>
 
-                                {
-                                    titlePage && (
-                                        <>
-                                            <div className='w-50 pb-3' style={{ borderBottom: '1px solid black' }}>
+                                {titlePage && (
+                                    <>
+                                        <div className='w-50 pb-3' style={{ borderBottom: '1px solid black' }}>
 
-                                                <label for="file-upload" className="uploadButton">
-                                                    Upload Images
-                                                </label>
-                                                <input id="file-upload" onChange={onSelectFile} type="file" accept=".jpg, .png" />
-                                            </div>
-                                            <div id="titlePage" style={{ width: '210mm', height: '297mm', padding: '0 10px' }}>
+                                            <label for="file-upload" className="uploadButton">
+                                                Upload Images
+                                            </label>
+                                            <input id="file-upload" onChange={onSelectFile} type="file" accept=".jpg, .png" />
+                                        </div>
+                                        <div id="titlePage" style={{ width: '210mm', height: '297mm', padding: '0 10px' }}>
 
-                                                <Container className='d-flex flex-column mt-5 align-items-center h-100 gap-4'>
-                                                    {showPreview ?
-                                                        <img className="file" src={preview} alt="school logo" style={{ width: '25%', height: 'auto' }} />
-                                                        :
-                                                        <div style={{ width: '25%', padding: '3rem 0', border: '1px dashed black' }}><b>LOGO</b></div>
-                                                    }
-                                                    <span style={{ width: '100%', padding: ' 0.8rem 1rem', border: '1px solid black', textAlign: 'left' }} >
-                                                        <b>School Name: </b> <Form.Control className='p-0' onChange={(e) => setSchoolName(e.target.value)} type="text" placeholder="Enter School Name" style={{ border: 'none' }} />
-                                                    </span>
-                                                    <Container className='p-0 d-flex gap-3'>
-                                                        <span style={{ flex: 1, padding: ' 0.8rem 1rem', border: '1px solid black', textAlign: 'left' }} ><b>Course Title:</b> <Form.Control className='p-0' onChange={(e) => setCourseTitle(e.target.value)} type="text" placeholder="Ex: (Computer Science)" style={{ border: 'none' }} /> </span>
-                                                        <span style={{ flex: 1, padding: ' 0.8rem 1rem', border: '1px solid black', textAlign: 'left' }} ><b>Course Code:</b> <Form.Control className='p-0' onChange={(e) => setCourseCode(e.target.value)} type="text" placeholder="Ex: (2201)" style={{ border: 'none' }} /> </span>
-                                                    </Container>
-                                                    <Container className='p-0 d-flex gap-3'>
-                                                        <span style={{ flex: 1, padding: ' 0.8rem 1rem', border: '1px solid black', textAlign: 'left' }} ><b>Paper Type:</b> <Form.Control className='p-0' onChange={(e) => setPaperType(e.target.value)} type="text" placeholder="Ex: (Part 1 Theory)" style={{ border: 'none' }} /> </span>
-                                                        <span style={{ flex: 1, padding: ' 0.8rem 1rem', border: '1px solid black', textAlign: 'left' }} ><b>Paper Variant:</b> <Form.Control className='p-0' onChange={(e) => setPaperVariant(e.target.value)} type="text" placeholder="Ex: (12)" style={{ border: 'none' }} /> </span>
-                                                    </Container>
-                                                    <span style={{ width: '100%', padding: ' 0.8rem 1rem', border: '1px solid black', textAlign: 'left' }} >
-                                                        <b>Exam Date: </b> <Form.Control className='p-0' onChange={(e) => setExamDate(e.target.value)} type="text" placeholder="DD/MM/YY" style={{ border: 'none' }} />
-                                                    </span>
-                                                    <Container className='p-0 d-flex gap-3'>
-                                                        <span style={{ flex: 1, padding: ' 0.8rem 1rem', border: '1px solid black', textAlign: 'left' }} ><b>Total Marks:</b> {calculateTotalExamMarks()} </span>
-                                                        <span style={{ flex: 1, padding: ' 0.8rem 1rem', border: '1px solid black', textAlign: 'left' }} ><b>Total Time:</b> <Form.Control className='p-0' onChange={(e) => setTotalTime(e.target.value)} type="text" placeholder="2 Hours 30 Minutes" style={{ border: 'none' }} /> </span>
-                                                    </Container>
-                                                    <hr />
-                                                    <span style={{ width: '100%', padding: ' 0.8rem 1rem', border: '1px solid black', textAlign: 'left' }} >Name: </span>
-                                                    <span style={{ width: '100%', padding: ' 0.8rem 1rem', border: '1px solid black', textAlign: 'left' }} >Class:</span>
-                                                    <span style={{ width: '100%', padding: ' 0.8rem 1rem', border: '1px solid black', textAlign: 'left' }} >Registration Number:</span>
+                                            <Container className='d-flex flex-column mt-5 align-items-center h-100 gap-4'>
+                                                {showPreview ?
+                                                    <img className="file" src={preview} alt="school logo" style={{ width: '25%', height: 'auto' }} />
+                                                    :
+                                                    <div style={{ width: '25%', padding: '3rem 0', border: '1px dashed black' }}><b>LOGO</b></div>
+                                                }
+                                                <span style={{ width: '100%', padding: ' 0.8rem 1rem', border: '1px solid black', textAlign: 'left' }} >
+                                                    <b>School Name: </b> <Form.Control className='p-0' onChange={(e) => setSchoolName(e.target.value)} type="text" placeholder="Enter School Name" style={{ border: 'none' }} />
+                                                </span>
+                                                <Container className='p-0 d-flex gap-3'>
+                                                    <span style={{ flex: 1, padding: ' 0.8rem 1rem', border: '1px solid black', textAlign: 'left' }} ><b>Course Title:</b> <Form.Control className='p-0' onChange={(e) => setCourseTitle(e.target.value)} type="text" placeholder="Ex: (Computer Science)" style={{ border: 'none' }} /> </span>
+                                                    <span style={{ flex: 1, padding: ' 0.8rem 1rem', border: '1px solid black', textAlign: 'left' }} ><b>Course Code:</b> <Form.Control className='p-0' onChange={(e) => setCourseCode(e.target.value)} type="text" placeholder="Ex: (2201)" style={{ border: 'none' }} /> </span>
                                                 </Container>
-                                            </div>
-                                        </>
-                                    )
-                                }
+                                                <Container className='p-0 d-flex gap-3'>
+                                                    <span style={{ flex: 1, padding: ' 0.8rem 1rem', border: '1px solid black', textAlign: 'left' }} ><b>Paper Type:</b> <Form.Control className='p-0' onChange={(e) => setPaperType(e.target.value)} type="text" placeholder="Ex: (Part 1 Theory)" style={{ border: 'none' }} /> </span>
+                                                    <span style={{ flex: 1, padding: ' 0.8rem 1rem', border: '1px solid black', textAlign: 'left' }} ><b>Paper Variant:</b> <Form.Control className='p-0' onChange={(e) => setPaperVariant(e.target.value)} type="text" placeholder="Ex: (12)" style={{ border: 'none' }} /> </span>
+                                                </Container>
+                                                <span style={{ width: '100%', padding: ' 0.8rem 1rem', border: '1px solid black', textAlign: 'left' }} >
+                                                    <b>Exam Date: </b> <Form.Control className='p-0' onChange={(e) => setExamDate(e.target.value)} type="text" placeholder="DD/MM/YY" style={{ border: 'none' }} />
+                                                </span>
+                                                <Container className='p-0 d-flex gap-3'>
+                                                    <span style={{ flex: 1, padding: ' 0.8rem 1rem', border: '1px solid black', textAlign: 'left' }} ><b>Total Marks:</b> {calculateTotalExamMarks()} </span>
+                                                    <span style={{ flex: 1, padding: ' 0.8rem 1rem', border: '1px solid black', textAlign: 'left' }} ><b>Total Time:</b> <Form.Control className='p-0' onChange={(e) => setTotalTime(e.target.value)} type="text" placeholder="2 Hours 30 Minutes" style={{ border: 'none' }} /> </span>
+                                                </Container>
+                                                <hr />
+                                                <span style={{ width: '100%', padding: ' 0.8rem 1rem', border: '1px solid black', textAlign: 'left' }} >Name: </span>
+                                                <span style={{ width: '100%', padding: ' 0.8rem 1rem', border: '1px solid black', textAlign: 'left' }} >Class:</span>
+                                                <span style={{ width: '100%', padding: ' 0.8rem 1rem', border: '1px solid black', textAlign: 'left' }} >Registration Number:</span>
+                                            </Container>
+                                        </div>
+                                    </>
+                                )}
 
-                                <div id="questions" style={{ width: '210mm', padding: '0 10px' }}>
+                                <div id="questions" style={{ width: '210mm', padding: '0 10px', position: 'relative' }}>
                                     {selectedQuestions.map((question, index) => {
 
                                         if (index + 1 === selectedQuestions.length)
                                             return (
                                                 <>
-                                                    <div id={`question${index}`} style={{}}>
-                                                        <b>Question {index + 1})</b>
+                                                    <div id={`question${index}`}>
+                                                        <b>Question {index + 1}</b>
                                                         <div dangerouslySetInnerHTML={{ __html: question.question }} />
                                                     </div>
-                                                    <div id={`question${index + 1}`} style={{}}>
+                                                    <div id={`question${index + 1}`} className='toHide' style={{ height: '1px', width: '1px', position: 'absolute', top: 0 }}>
                                                         <hr />
                                                     </div>
                                                 </>
                                             )
 
                                         return (
-                                            <div id={`question${index}`} style={{}}>
-                                                <b>Question {index + 1})</b>
+                                            <div id={`question${index}`}>
+                                                <b>Question {index + 1}</b>
                                                 <div dangerouslySetInnerHTML={{ __html: question.question }} />
                                             </div>
                                         )
@@ -399,7 +412,7 @@ const ViewPDFModal = ({ show, handleClose, selectedQuestions, clearSelectedQuest
                                         return (
                                             <>
                                                 <div id={`answer${index}`} style={{ textAlign: 'left' }}>
-                                                    <b>{index + 1})</b>
+                                                    <b>Question{index + 1}</b>
                                                     <div dangerouslySetInnerHTML={{ __html: question.answer }} />
                                                 </div>
                                                 <div id={`answer${index + 1}`} style={{ textAlign: 'left' }}>
@@ -422,33 +435,37 @@ const ViewPDFModal = ({ show, handleClose, selectedQuestions, clearSelectedQuest
 
             </Modal.Body>
             <Modal.Footer>
-                {
-                    !localStorage.getItem("isGuest") &&
-                    <>
-                        <Form.Check
-                            value={titlePage}
-                            type="switch"
-                            id="title page"
-                            label="Include Title Page"
-                            onChange={(e) => setTitlePage(e.target.checked)}
-                        />
-                    </>
-                }
+                <Container className='d-flex gap-3'>
+                    <ProgressBar now={rendered} style={{ width: '100%' }} />
+                    {
+                        !localStorage.getItem("isGuest") &&
+                        <>
+                            <Form.Check
+                                value={titlePage}
+                                type="switch"
+                                id="title page"
+                                label="Include Title Page"
+                                onChange={(e) => setTitlePage(e.target.checked)}
+                            />
+                        </>
+                    }
 
-                <Button variant="danger" onClick={handleClose}>
-                    Close
-                </Button>
-                {
-                    key === "question" ?
-                        <Button variant="primary" onClick={saveQuestionsPdf}>
-                            Generate Questions PDF
-                        </Button>
-                        :
-                        <Button variant="primary" onClick={saveAnswersPdf}>
-                            Generate Answers PDF
-                        </Button>
-                }
+                    <Button variant="danger" onClick={handleClose}>
+                        Close
+                    </Button>
 
+                    {
+                        key === "question" ?
+                            <Button variant="primary" onClick={saveQuestionsPdf}>
+                                Generate Questions PDF
+                            </Button>
+                            :
+                            <Button variant="primary" onClick={saveAnswersPdf}>
+                                Generate Answers PDF
+                            </Button>
+                    }
+
+                </Container>
             </Modal.Footer>
         </Modal >
     )
