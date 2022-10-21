@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import Button from 'react-bootstrap/Button'
 import Container from 'react-bootstrap/Container'
-import UserContext from '../globals/user-data'
 import { toast } from 'react-toastify'
 import Table from 'react-bootstrap/Table';
 import { approveUser, getUnverifiedUsers, unapproveUser } from '../services/user'

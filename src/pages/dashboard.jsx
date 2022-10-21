@@ -4,7 +4,6 @@ import Container from 'react-bootstrap/Container'
 import Form from 'react-bootstrap/Form'
 import Question from '../components/Question'
 import Accordion from 'react-bootstrap/Accordion';
-import Pagination from 'react-bootstrap/Pagination';
 import { searchQuestions } from '../services/questions'
 import { getAllBoards } from '../services/boards'
 import { toast } from 'react-toastify'
@@ -18,8 +17,6 @@ import ViewPDFModal from '../modals/ViewPDFModal'
 import { getTopicsOfSubject } from '../services/topics'
 import Multiselect from 'multiselect-react-dropdown';
 
-import { PDFDownloadLink } from '@react-pdf/renderer'
-import QuestionPDF from '../components/QuestionPDF'
 import { getQuestionTypes } from '../services/questionTypes'
 
 function getWindowDimensions() {

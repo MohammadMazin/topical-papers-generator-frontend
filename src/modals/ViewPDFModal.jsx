@@ -7,10 +7,7 @@ import Tabs from 'react-bootstrap/Tabs';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import Form from 'react-bootstrap/Form';
-import html2PDF from 'jspdf-html2canvas'
 import { toast } from 'react-toastify';
-import { PDFDownloadLink } from '@react-pdf/renderer'
-import QuestionPDF from '../components/QuestionPDF'
 import { addSavedPaper } from '../services/savedPapers';
 
 const ViewPDFModal = ({ show, handleClose, selectedQuestions, clearSelectedQuestions, fromSaved = false, title }) => {
@@ -45,36 +42,19 @@ const ViewPDFModal = ({ show, handleClose, selectedQuestions, clearSelectedQuest
 
         setPreview(previewArray)
         setShowPreview(true)
-        // free memory when ever this component is unmounted
         return () => URL.revokeObjectURL(previewArray)
     }, [selectedFile])
 
     const pxToMm = (num) => num * 0.264583333;
 
     const saveQuestionsPdf = async () => {
-        // window.html2canvas = html2canvas;
-        // window.scrollTo(0, 0);
-
-        // var dateObj = new Date();
-        // var month = dateObj.getUTCMonth() + 1; //months from 1-12
-        // var day = dateObj.getUTCDate();
-        // var year = dateObj.getUTCFullYear();
-
-        // const newdate = year + "/" + month + "/" + day;
-
-        // var childDivs = document.getElementById('questions').children
-
-
-
-
         window.html2canvas = html2canvas;
         window.scrollTo(0, 0);
 
         var dateObj = new Date();
-        var month = dateObj.getUTCMonth() + 1; //months from 1-12
+        var month = dateObj.getUTCMonth() + 1;
         var day = dateObj.getUTCDate();
         var year = dateObj.getUTCFullYear();
-
         const newdate = year + "/" + month + "/" + day;
 
         var childDivs = document.getElementById('questions').children
@@ -83,11 +63,10 @@ const ViewPDFModal = ({ show, handleClose, selectedQuestions, clearSelectedQuest
         let questionAdded = []
         var skipNext = false
 
+        const scale = 1.5
+
         if (titlePage) {
-
             // check if all fields have value in title page
-
-
             if (schoolName === '' || courseTitle === '' || courseCode === '' || paperType === '' || paperVariant === '' || examDate === '' || totalTime === '') {
                 toast.error('Please fill all the fields in the title page')
                 return
@@ -100,14 +79,14 @@ const ViewPDFModal = ({ show, handleClose, selectedQuestions, clearSelectedQuest
 
             const titlePage = document.getElementById('titlePage')
             await html2canvas(titlePage, {
-                scale: 2
+                scale: scale
             }).then(function (canvas) {
                 doc.addPage()
                 var imgData = canvas.toDataURL('image/jpeg');
                 var imgWidth = 210;
                 var imgHeight = pxToMm(titlePage.offsetHeight);
                 var position = 0
-                doc.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+                doc.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight, undefined, 'FAST');
             })
         }
 
@@ -121,7 +100,7 @@ const ViewPDFModal = ({ show, handleClose, selectedQuestions, clearSelectedQuest
             const question = document.getElementById(`question${i}`)
 
             await html2canvas(question, {
-                scale: 2
+                scale: scale
                 // eslint-disable-next-line no-loop-func
             }).then(function (canvas) {
                 doc.addPage();
@@ -134,7 +113,7 @@ const ViewPDFModal = ({ show, handleClose, selectedQuestions, clearSelectedQuest
 
                 var position = 0;
 
-                doc.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+                doc.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight, undefined, 'FAST');
                 heightLeftToPrint -= pageHeight;
                 questionAdded.push(i)
 
@@ -142,7 +121,7 @@ const ViewPDFModal = ({ show, handleClose, selectedQuestions, clearSelectedQuest
                 while (heightLeftToPrint > 0) {
                     position = heightLeftToPrint - imgHeight;
                     doc.addPage();
-                    doc.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight, undefined, 'SLOW');
+                    doc.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight, undefined, 'FAST');
                     heightLeftToPrint -= pageHeight;
                 }
 
@@ -151,58 +130,48 @@ const ViewPDFModal = ({ show, handleClose, selectedQuestions, clearSelectedQuest
                 const nextQuestion = document.getElementById(`question${i + 1}`)
                 if ((pxToMm(nextQuestion?.offsetHeight)) < spaceRemaining) {
                     html2canvas(nextQuestion, {
-                        scale: 2
+                        scale: scale
                     }).then(function (canvas) {
                         var imgData = canvas.toDataURL('image/jpeg');
-                        // var imgWidthQ = 210;
                         var imgWidthQ = pxToMm(nextQuestion.offsetWidth);
                         var imgHeightQ = pxToMm(nextQuestion.offsetHeight);
-                        // doc.addImage(imgData, 'JPEG', 0, pxToMm(question.offsetHeight), imgWidthQ, imgHeightQ);
-                        doc.addImage(imgData, 'JPEG', 0, pageHeight - spaceRemaining, imgWidthQ, imgHeightQ);
-
-
+                        doc.addImage(imgData, 'JPEG', 0, pageHeight - spaceRemaining, imgWidthQ, imgHeightQ, undefined, 'FAST');
                     }
                     ).then(skipNext = true)
                 }
             });
-
-
         }
         doc.deletePage(1)
 
         const pages = doc.internal.getNumberOfPages();
-        const pageWidth = doc.internal.pageSize.width;  //Optional
-        const pageHeight = doc.internal.pageSize.height;  //Optional
-        doc.setFontSize(12);  //Optional
+        const pageWidth = doc.internal.pageSize.width;
+        const pageHeight = doc.internal.pageSize.height;
+        doc.setFontSize(12);
         for (let j = 1; j < pages + 1; j++) {
-            let horizontalPos = pageWidth / 2;  //Can be fixed number
-            let verticalPos = pageHeight - 10;  //Can be fixed number
+            let horizontalPos = pageWidth / 2;
+            let verticalPos = pageHeight - 10;
             doc.setPage(j);
             doc.text(`${j} of ${pages}`, horizontalPos, verticalPos, { align: 'center' });
         }
 
-        doc.save('Questions.pdf')
+        doc.save(`Questions ${newdate} - Topical Papers Generator.pdf`)
         setKey('answer')
     }
 
     const saveAnswersPdf = async () => {
         window.html2canvas = html2canvas;
         window.scrollTo(0, 0);
-
         var dateObj = new Date();
         var month = dateObj.getUTCMonth() + 1; //months from 1-12
         var day = dateObj.getUTCDate();
         var year = dateObj.getUTCFullYear();
-
         const newdate = year + "/" + month + "/" + day;
 
         var childDivs = document.getElementById('answers').children
         var doc = new jsPDF('p', 'mm', undefined, undefined, true);
         var skipNext = false
 
-        var pagesToRemove = [1]
         let questionAdded = []
-
 
         for (let i = 0; i < childDivs.length; i++) {
 
@@ -227,7 +196,7 @@ const ViewPDFModal = ({ show, handleClose, selectedQuestions, clearSelectedQuest
 
                 var position = 0;
 
-                doc.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+                doc.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight, undefined, 'FAST');
                 heightLeftToPrint -= pageHeight;
                 questionAdded.push(i)
 
@@ -235,7 +204,7 @@ const ViewPDFModal = ({ show, handleClose, selectedQuestions, clearSelectedQuest
                 while (heightLeftToPrint > 0) {
                     position = heightLeftToPrint - imgHeight;
                     doc.addPage();
-                    doc.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight, undefined, 'SLOW');
+                    doc.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight, undefined, 'FAST');
                     heightLeftToPrint -= pageHeight;
                 }
 
@@ -249,8 +218,7 @@ const ViewPDFModal = ({ show, handleClose, selectedQuestions, clearSelectedQuest
                         var imgData = canvas.toDataURL('image/jpeg');
                         var imgWidth = 210;
                         var imgHeight = pxToMm(nextQuestion.offsetHeight);
-                        // doc.addImage(imgData, 'JPEG', 0, pxToMm(answer.offsetHeight), imgWidth, imgHeight);
-                        doc.addImage(imgData, 'JPEG', 0, pageHeight - spaceRemaining, imgWidth, imgHeight);
+                        doc.addImage(imgData, 'JPEG', 0, pageHeight - spaceRemaining, imgWidth, imgHeight, undefined, 'FAST');
                     }
                     ).then(skipNext = true)
                 }
@@ -258,40 +226,35 @@ const ViewPDFModal = ({ show, handleClose, selectedQuestions, clearSelectedQuest
 
 
         }
-        doc.deletePage(1)
 
+        doc.deletePage(1)
         const pages = doc.internal.getNumberOfPages();
-        const pageWidth = doc.internal.pageSize.width;  //Optional
-        const pageHeight = doc.internal.pageSize.height;  //Optional
-        doc.setFontSize(12);  //Optional
+        const pageWidth = doc.internal.pageSize.width;
+        const pageHeight = doc.internal.pageSize.height;
+        doc.setFontSize(12);
         for (let j = 1; j < pages + 1; j++) {
-            let horizontalPos = pageWidth / 2;  //Can be fixed number
-            let verticalPos = pageHeight - 10;  //Can be fixed number
+            let horizontalPos = pageWidth / 2;
+            let verticalPos = pageHeight - 10;
             doc.setPage(j);
             doc.text(`${j} of ${pages}`, horizontalPos, verticalPos, { align: 'center' });
         }
-        doc.save('Answers.pdf')
+        doc.save(`Answers ${newdate} - Topical Papers Generator.pdf`)
 
         clearSelectedQuestions()
         handleClose()
-
     }
 
     const onSelectFile = (e) => {
-        //on upload
         if (!e.target.files || e.target.files.length === 0) {
             setSelectedFile(undefined)
             return
         }
-
-        // I've kept this example simple by using the first image instead of multiple
         setSelectedFile(e.target.files)
     }
 
     const calculateTotalExamMarks = () => {
         return selectedQuestions.reduce((prev, current) => prev + current.marks, 0)
     }
-
 
     const handleSavePaper = async () => {
 
@@ -399,7 +362,6 @@ const ViewPDFModal = ({ show, handleClose, selectedQuestions, clearSelectedQuest
                                                 </Container>
                                             </div>
                                         </>
-
                                     )
                                 }
 
@@ -410,7 +372,7 @@ const ViewPDFModal = ({ show, handleClose, selectedQuestions, clearSelectedQuest
                                             return (
                                                 <>
                                                     <div id={`question${index}`} style={{}}>
-                                                        <b>{index + 1})</b>
+                                                        <b>Question {index + 1})</b>
                                                         <div dangerouslySetInnerHTML={{ __html: question.question }} />
                                                     </div>
                                                     <div id={`question${index + 1}`} style={{}}>

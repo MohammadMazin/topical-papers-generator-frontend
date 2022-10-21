@@ -12,7 +12,6 @@ import { getAllLevelsOfBoard } from '../services/levels'
 import { getAllSubjects } from '../services/subjects'
 import CodeEditor from '@uiw/react-textarea-code-editor';
 import { getTopicsOfSubject } from '../services/topics'
-import { useNavigate } from 'react-router-dom'
 import QuestionDetail from '../modals/QuestionDetail'
 import EditQuestion from '../modals/EditQuestion'
 
@@ -49,7 +48,6 @@ const AddQuestion = () => {
     const [showEdit, setShowEdit] = useState(false)
     const [loading, setLoading] = useState(false)
 
-    const navigate = useNavigate()
 
     useEffect(() => {
 

@@ -3,7 +3,6 @@ import Modal from 'react-bootstrap/Modal'
 import Container from 'react-bootstrap/esm/Container'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
-import { editBoard } from '../services/boards'
 import { toast } from 'react-toastify'
 import { editQuestionType } from '../services/questionTypes'
 
